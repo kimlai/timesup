@@ -4,23 +4,20 @@ defmodule TimesupWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-  end
-
-  pipeline :api do
-    plug :accepts, ["json"]
+    plug :put_root_layout, {TimesupWeb.LayoutView, :root}
   end
 
   scope "/", TimesupWeb do
     pipe_through :browser
 
     get "/", PageController, :index
-  end
+    post "/create-game", PageController, :create_game
+    get "/game/:id/join", PageController, :choose_username
+    post "/game/:id/join", PageController, :join_game
 
-  # Other scopes may use custom stacks.
-  # scope "/api", TimesupWeb do
-  #   pipe_through :api
-  # end
+    live "/game/:id", GameLive
+  end
 end

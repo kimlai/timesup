@@ -9,9 +9,11 @@ defmodule Timesup.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      TimesupWeb.Endpoint
+      TimesupWeb.Endpoint,
       # Starts a worker by calling: Timesup.Worker.start_link(arg)
       # {Timesup.Worker, arg},
+      {Registry, keys: :unique, name: Timesup.GameRegistry},
+      {DynamicSupervisor, strategy: :one_for_one, name: Timesup.GameSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
