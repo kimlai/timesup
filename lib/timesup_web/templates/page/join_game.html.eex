@@ -1,4 +1,5 @@
 <%= form_for @conn, Routes.page_path(@conn, :join_game, @id), [], fn f -> %>
+  <%= label f, :username, "Pseudo" %>
   <%= text_input f, :username, value: "" %>
   <%= submit "Valider" %>
 <%= end %>

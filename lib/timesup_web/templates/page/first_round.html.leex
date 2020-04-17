@@ -1,0 +1,44 @@
+<div>C'est à <%= Timesup.GameState.current_player(@game).name %> de faire deviner</div>
+<ul>
+  <li>
+    <div>Équipe 1</div>
+      <div><%= Timesup.GameState.team_1_points(@game) %> points</div>
+      <ul>
+        <%= for player <- Timesup.GameState.team_1(@game) do %>
+          <li>
+            <%= player.name %>
+            <%= if player.name == @current_user do %> (vous)<% end %>
+          </li>
+        <% end %>
+      </ul>
+  </li>
+  <li>
+    <div>Équipe 2</div>
+      <div><%= Timesup.GameState.team_2_points(@game) %> points</div>
+      <ul>
+        <%= for player <- Timesup.GameState.team_2(@game) do %>
+          <li>
+            <%= player.name %>
+            <%= if player.name == @current_user do %> (vous)<% end %>
+          </li>
+        <% end %>
+      </ul>
+  </li>
+</ul>
+
+<%= if @game.playing do %>
+  <div><%= @game.time_remaining %></div>
+<% end %>
+
+<%= if Timesup.GameState.current_player(@game).name == @current_user do %>
+  <%= if @game.playing do %>
+    <div><%= Timesup.GameState.current_card(@game) %></div>
+    <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
+      <%= submit "Deviné !" %>
+    </form>
+  <% else %>
+    <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
+      <%= submit "C'est parti !" %>
+    </form>
+  <% end %>
+<% end %>

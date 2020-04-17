@@ -25,7 +25,7 @@ defmodule TimesupWeb.PageController do
     Phoenix.PubSub.broadcast!(Timesup.PubSub, game_id, :update)
 
     conn
-    |> put_session(:user, username)
+    |> put_session(:current_user, username)
     |> redirect(to: "/game/#{game_id}")
   end
 
