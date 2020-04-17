@@ -25,13 +25,13 @@ defmodule TimesupWeb.GameLive do
   def render(assigns) do
     case assigns.game.status do
       :deck_building ->
-        Phoenix.View.render(TimesupWeb.PageView, "game.html", assigns)
+        Phoenix.View.render(TimesupWeb.PageView, "deck_building.html", assigns)
 
       :choosing_teams ->
         Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
 
-      :first_round ->
-        Phoenix.View.render(TimesupWeb.PageView, "first_round.html", assigns)
+      :game_started ->
+        Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
     end
   end
 

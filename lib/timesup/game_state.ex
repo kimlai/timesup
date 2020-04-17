@@ -103,7 +103,7 @@ defmodule Timesup.GameState do
   def start_game(%GameState{} = game) do
     %{
       game
-      | status: :first_round,
+      | status: :game_started,
         deck: Enum.flat_map(game.players, fn {_, p} -> p.cards end) |> Enum.shuffle(),
         player_stack: build_player_stack(team_1(game), team_2(game))
     }
