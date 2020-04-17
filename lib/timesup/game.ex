@@ -6,7 +6,7 @@ defmodule Timesup.Game do
 
   def start_link(options) do
     [name: {:via, Registry, {Timesup.GameRegistry, game_id}}] = options
-    GenServer.start_link(__MODULE__, GameState.new(game_id), options)
+    GenServer.start_link(__MODULE__, GameState.fixture(game_id), options)
   end
 
   @impl true

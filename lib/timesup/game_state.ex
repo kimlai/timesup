@@ -169,4 +169,60 @@ defmodule Timesup.GameState do
   defp pad([head | tail_1], [_ | tail_2], original_l1) do
     [head | pad(tail_1, tail_2, original_l1)]
   end
+
+  def fixture(id) do
+    %GameState{
+      id: id,
+      status: :deck_building,
+      players: %{
+        "kim" => %{
+          name: "kim",
+          ready: true,
+          cards: ["Roger Rabbit", "Batman"],
+          team: :team_1,
+          points: 0
+        },
+        "julie" => %{
+          name: "julie",
+          ready: true,
+          cards: ["Superman", "Spiderman"],
+          team: :team_1,
+          points: 0
+        },
+        "louis" => %{
+          name: "louis",
+          ready: true,
+          cards: ["Shakira", "Beyoncé"],
+          team: :team_1,
+          points: 0
+        },
+        "etienne" => %{
+          name: "etienne",
+          ready: true,
+          cards: ["Bourdieu", "Mendeleiev"],
+          team: :team_2,
+          points: 0
+        },
+        "fab" => %{
+          name: "fab",
+          ready: true,
+          cards: ["Otis Redding", "Charles Mingus"],
+          team: :team_2,
+          points: 0
+        },
+        "cam" => %{
+          name: "cam",
+          ready: true,
+          cards: ["Anaïs", "Benabar"],
+          team: :team_2,
+          points: 0
+        }
+      },
+      deck: [],
+      player_stack: [],
+      playing: false,
+      time_remaining: @seconds_per_turn
+    }
+    |> start_game()
+  end
 end
