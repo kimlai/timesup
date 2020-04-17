@@ -1,5 +1,5 @@
 <div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien
-  <input editable=false value="https://timesup.kimlaitrinh.me/game/<%= @game.id %>/join" />
+  <input editable=false value="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>" />
 </div>
 <h1>Joueurs</h1>
 <ul>
