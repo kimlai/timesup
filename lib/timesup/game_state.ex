@@ -1,8 +1,6 @@
 defmodule Timesup.GameState do
   alias __MODULE__
 
-  @seconds_per_turn 30
-
   defstruct(
     id: nil,
     status: :deck_building,
@@ -10,7 +8,8 @@ defmodule Timesup.GameState do
     deck: [],
     player_stack: [],
     playing: false,
-    time_remaining: @seconds_per_turn
+    time_remaining: 60,
+    round: :round_1
   )
 
   def new(id) do
@@ -26,7 +25,11 @@ defmodule Timesup.GameState do
             ready: false,
             cards: [],
             team: nil,
-            points: 0
+            points: %{
+              round_1: 0,
+              round_2: 0,
+              round_3: 0
+            }
           })
     }
   end
@@ -68,30 +71,39 @@ defmodule Timesup.GameState do
     %{game | players: Map.update!(game.players, player, fn p -> %{p | team: team} end)}
   end
 
-  def team_1(%GameState{players: players} = game) do
+  def team_1(%GameState{} = game) do
+    team(game, :team_1)
+  end
+
+  def team_2(%GameState{} = game) do
+    team(game, :team_2)
+  end
+
+  defp team(%GameState{players: players} = game, team) do
     players
     |> Map.values()
-    |> Enum.filter(fn p -> p.team == :team_1 end)
+    |> Enum.filter(fn p -> p.team == team end)
   end
 
   def team_1_points(%GameState{} = game) do
-    game
-    |> team_1()
-    |> Enum.map(fn p -> p.points end)
-    |> Enum.sum()
-  end
-
-  def team_2(%GameState{players: players} = game) do
-    players
-    |> Map.values()
-    |> Enum.filter(fn p -> p.team == :team_2 end)
+    team_points(game, :team_1)
   end
 
   def team_2_points(%GameState{} = game) do
+    team_points(game, :team_2)
+  end
+
+  defp team_points(%GameState{} = game, team) do
     game
-    |> team_2()
+    |> team(team)
     |> Enum.map(fn p -> p.points end)
-    |> Enum.sum()
+    |> Enum.reduce(fn x, acc ->
+      %{
+        round_1: acc.round_1 + x.round_1,
+        round_2: acc.round_2 + x.round_2,
+        round_3: acc.round_3 + x.round_3
+      }
+    end)
   end
 
   def players_with_no_team(%GameState{players: players} = game) do
@@ -104,9 +116,15 @@ defmodule Timesup.GameState do
     %{
       game
       | status: :game_started,
-        deck: Enum.flat_map(game.players, fn {_, p} -> p.cards end) |> Enum.shuffle(),
+        deck: shuffle_deck(game),
         player_stack: build_player_stack(team_1(game), team_2(game))
     }
+  end
+
+  def shuffle_deck(%GameState{players: players} = game) do
+    players
+    |> Enum.flat_map(fn {_, p} -> p.cards end)
+    |> Enum.shuffle()
   end
 
   def current_player(%GameState{player_stack: [head | _]}), do: head
@@ -118,29 +136,66 @@ defmodule Timesup.GameState do
     %{game | playing: true}
   end
 
+  def seconds_per_turn(:round_1), do: 60
+  def seconds_per_turn(_), do: 30
+
   def tick(%GameState{playing: false} = game), do: game
 
-  def tick(%GameState{player_stack: [head | tail]} = game) do
+  def tick(%GameState{} = game) do
     time_remaining = game.time_remaining - 1
 
     if time_remaining < 0 do
-      %{game | time_remaining: @seconds_per_turn, playing: false, player_stack: tail ++ [head]}
+      end_turn(game)
     else
       %{game | time_remaining: time_remaining}
     end
   end
 
-  def card_guessed(%GameState{deck: [_ | tail]} = game) do
+  defp end_turn(%GameState{player_stack: [head | tail]} = game) do
     %{
       game
-      | deck: tail,
-        players:
-          Map.update!(game.players, current_player(game).name, fn p ->
-            %{p | points: p.points + 1}
-          end),
-        playing: tail != []
+      | time_remaining: seconds_per_turn(game.round),
+        playing: false,
+        player_stack: tail ++ [head]
     }
   end
+
+  def card_guessed(%GameState{deck: [_ | []]} = game) do
+    game
+    |> add_point()
+    |> end_turn()
+    |> end_round()
+  end
+
+  def card_guessed(%GameState{deck: [_ | tail]} = game) do
+    %{game | deck: tail}
+    |> add_point()
+  end
+
+  defp add_point(game) do
+    %{
+      game
+      | players:
+          Map.update!(game.players, current_player(game).name, fn p ->
+            %{p | points: Map.update!(p.points, game.round, &(&1 + 1))}
+          end)
+    }
+  end
+
+  def end_round(game) do
+    %{
+      game
+      | round: next_round(game.round),
+        deck: shuffle_deck(game),
+        time_remaining: seconds_per_turn(next_round(game.round))
+    }
+  end
+
+  def game_over?(game), do: game.round == nil
+
+  defp next_round(:round_1), do: :round_2
+  defp next_round(:round_2), do: :round_3
+  defp next_round(:round_3), do: nil
 
   defp build_player_stack(team_1, team_2) do
     cond do
@@ -180,48 +235,72 @@ defmodule Timesup.GameState do
           ready: true,
           cards: ["Roger Rabbit", "Batman"],
           team: :team_1,
-          points: 0
+          points: %{
+            round_1: 0,
+            round_2: 0,
+            round_3: 0
+          }
         },
         "julie" => %{
           name: "julie",
           ready: true,
           cards: ["Superman", "Spiderman"],
           team: :team_1,
-          points: 0
+          points: %{
+            round_1: 0,
+            round_2: 0,
+            round_3: 0
+          }
         },
         "louis" => %{
           name: "louis",
           ready: true,
           cards: ["Shakira", "Beyoncé"],
           team: :team_1,
-          points: 0
+          points: %{
+            round_1: 0,
+            round_2: 0,
+            round_3: 0
+          }
         },
         "etienne" => %{
           name: "etienne",
           ready: true,
           cards: ["Bourdieu", "Mendeleiev"],
           team: :team_2,
-          points: 0
+          points: %{
+            round_1: 0,
+            round_2: 0,
+            round_3: 0
+          }
         },
         "fab" => %{
           name: "fab",
           ready: true,
           cards: ["Otis Redding", "Charles Mingus"],
           team: :team_2,
-          points: 0
+          points: %{
+            round_1: 0,
+            round_2: 0,
+            round_3: 0
+          }
         },
         "cam" => %{
           name: "cam",
           ready: true,
           cards: ["Anaïs", "Benabar"],
           team: :team_2,
-          points: 0
+          points: %{
+            round_1: 0,
+            round_2: 0,
+            round_3: 0
+          }
         }
       },
       deck: [],
       player_stack: [],
       playing: false,
-      time_remaining: @seconds_per_turn
+      time_remaining: 60
     }
     |> start_game()
   end

@@ -1,8 +1,24 @@
-<div>C'est à <%= Timesup.GameState.current_player(@game).name %> de faire deviner</div>
+<%= case @game.round do %>
+  <% :round_1 -> %>
+    <div>Tour 1 : mots illimités, pas le droit de passer la carte</div>
+  <% :round_2 -> %>
+    <div>Tour 2 : un seul mot, vous avez le droit de passer autant de carte que vous voulez</div>
+  <% :round_3 -> %>
+    <div>Tour 2 : aucun mot, on mime. Vous avez le droit de passer autant de carte que vous voulez</div>
+  <% nil -> %>
+    <div>C'est terminé !</div>
+<% end %>
+<%= if !Timesup.GameState.game_over?(@game) do %>
+  <div>C'est à <%= Timesup.GameState.current_player(@game).name %> de faire deviner</div>
+<% end %>
 <ul>
   <li>
     <div>Équipe 1</div>
-      <div><%= Timesup.GameState.team_1_points(@game) %> points</div>
+      <ul>
+        <li>Tour 1: <%= Timesup.GameState.team_1_points(@game).round_1 %> points</li>
+        <li>Tour 2: <%= Timesup.GameState.team_1_points(@game).round_2 %> points</li>
+        <li>Tour 3: <%= Timesup.GameState.team_1_points(@game).round_3 %> points</li>
+      </ul>
       <ul>
         <%= for player <- Timesup.GameState.team_1(@game) do %>
           <li>
@@ -14,7 +30,11 @@
   </li>
   <li>
     <div>Équipe 2</div>
-      <div><%= Timesup.GameState.team_2_points(@game) %> points</div>
+      <ul>
+        <li>Tour 1: <%= Timesup.GameState.team_2_points(@game).round_1 %> points</li>
+        <li>Tour 2: <%= Timesup.GameState.team_2_points(@game).round_2 %> points</li>
+        <li>Tour 3: <%= Timesup.GameState.team_2_points(@game).round_3 %> points</li>
+      </ul>
       <ul>
         <%= for player <- Timesup.GameState.team_2(@game) do %>
           <li>
@@ -25,6 +45,9 @@
       </ul>
   </li>
 </ul>
+<%= if !Timesup.GameState.game_over?(@game) do %>
+  <div><%= length(@game.deck) %> cartes restantes</div>
+<% end %>
 
 <%= if @game.playing do %>
   <div><%= @game.time_remaining %></div>
