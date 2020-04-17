@@ -12,7 +12,7 @@
   <% end %>
 </ul>
 
-<%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) < 2 do %>
+<%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) < 6 do %>
   <%= f = form_for :card, "#", [phx_submit: :add_card] %>
     <%= label f, :name, "Nouvelle carte" %>
     <%= text_input f, :name %>
