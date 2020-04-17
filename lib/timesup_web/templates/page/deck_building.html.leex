@@ -1,4 +1,6 @@
-<%= @game.status %>
+<div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien
+  <input editable=false value="https://timesup.kimlaitrinh.me/game/<%= @game.id %>/join" />
+</div>
 <h1>Joueurs</h1>
 <ul>
   <%= for player <- Timesup.GameState.get_players(@game) do %>
