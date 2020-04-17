@@ -59,6 +59,11 @@
     <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
       <%= submit "Deviné !" %>
     </form>
+    <%= if @game.round != :round_1 do %>
+      <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
+        <%= submit "Je passe" %>
+      </form>
+    <% end %>
   <% else %>
     <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
       <%= submit "C'est parti !" %>

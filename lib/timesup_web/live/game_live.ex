@@ -78,6 +78,12 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign_game(socket)}
   end
 
+  def handle_event("pass_card", %{}, %{assigns: assigns} = socket) do
+    Timesup.Game.pass_card(assigns.game_id)
+    Phoenix.PubSub.broadcast!(Timesup.PubSub, assigns.game_id, :update)
+    {:noreply, assign_game(socket)}
+  end
+
   defp choose_team(team, %{assigns: assigns} = socket) do
     Timesup.Game.choose_team(assigns.game_id, assigns.current_user, team)
     Phoenix.PubSub.broadcast!(Timesup.PubSub, assigns.game_id, :update)

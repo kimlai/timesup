@@ -50,6 +50,10 @@ defmodule Timesup.Game do
     GenServer.cast(via_tuple(game_id), {:card_guessed})
   end
 
+  def pass_card(game_id) do
+    GenServer.cast(via_tuple(game_id), {:pass_card})
+  end
+
   defp via_tuple(game_id) do
     {:via, Registry, {Timesup.GameRegistry, game_id}}
   end
@@ -102,6 +106,11 @@ defmodule Timesup.Game do
   @impl true
   def handle_cast({:card_guessed}, game) do
     {:noreply, GameState.card_guessed(game)}
+  end
+
+  @impl true
+  def handle_cast({:pass_card}, game) do
+    {:noreply, GameState.pass_card(game)}
   end
 
   @impl true

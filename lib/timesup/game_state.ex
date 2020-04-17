@@ -182,6 +182,10 @@ defmodule Timesup.GameState do
     }
   end
 
+  def pass_card(%GameState{deck: [head | tail]} = game) do
+    %{game | deck: tail ++ [head]}
+  end
+
   def end_round(game) do
     %{
       game
