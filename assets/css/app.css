@@ -17,13 +17,15 @@
   --s6: calc(var(--s5) * var(--ratio));
   --s7: calc(var(--s6) * var(--ratio));
   --s8: calc(var(--s7) * var(--ratio));
+
   font-size: calc(0.333vw + 1em);
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
   font-size: var(--s3);
   letter-spacing: -3px;
+  font-weight: bold;
 }
 h2 {
   font-size: var(--s1);
@@ -35,7 +37,7 @@ button {
   color: white;
   border: none;
   padding: var(--s-1) var(--s2);
-  font-weight: 600;
+  font-weight: bold;
 }
 
 button:hover {
@@ -89,7 +91,7 @@ label {
   border-radius: var(--s-1);
   min-width: 15ch;
   text-align: center;
-  margin-bottom: var(--s0);
+  font-weight: bold;
 }
 
 .choose-teams {
@@ -150,6 +152,9 @@ ul.player-list {
 }
 .game-started aside {
   outline: 4px dashed;
+}
+.game-started .round-header > * + * {
+  margin-top: var(--s-4);
 }
 .game-started .content > * {
   max-width: var(--measure);
