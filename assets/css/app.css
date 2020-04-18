@@ -51,7 +51,10 @@ button:hover {
 
 /* the csrf protection hidden input fucks things up */
 form > *:not([type="hidden"]) + * {
-  margin-top: var(--s-1);
+  margin-top: var(--s0);
+}
+label + * {
+  margin-top: var(--s-3);
 }
 
 label,

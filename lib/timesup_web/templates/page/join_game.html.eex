@@ -1,7 +1,9 @@
 <div class="centered">
   <%= form_for @conn, Routes.page_path(@conn, :join_game, @id), [class: "join-game-form"], fn f -> %>
-    <%= label f, :username, "Votre nom" %>
-    <%= text_input f, :username, value: "" %>
+    <div>
+      <%= label f, :username, "Votre nom" %>
+      <%= text_input f, :username, value: "" %>
+    </div>
     <%= submit "Valider" %>
   <%= end %>
 </div>
