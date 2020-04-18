@@ -1,44 +1,51 @@
-<ul>
-  <%= for player <- Timesup.GameState.players_with_no_team(@game) do %>
-    <li>
-      <%= player.name %>
-      <%= if player.name == @current_user do %> (vous)<% end %>
-    </li>
-  <% end %>
-</ul>
-<ul>
-  <li>
-    <div>Équipe 1</div>
-      <ul>
+<section class="choose-teams">
+  <h1>Répartition des équipes</h1>
+  <div>
+    <ul class="player-list">
+      <%= for player <- Timesup.GameState.players_with_no_team(@game) do %>
+        <li class="player">
+          <%= player.name %>
+          <%= if player.name == @current_user do %> (vous)<% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <h2>Équipe 1</h2>
+  <div class="team">
+    <%= if Timesup.GameState.team_1(@game) != [] do %>
+      <ul class="player-list">
         <%= for player <- Timesup.GameState.team_1(@game) do %>
-          <li>
+          <li class="player">
             <%= player.name %>
             <%= if player.name == @current_user do %> (vous)<% end %>
           </li>
         <% end %>
       </ul>
-      <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_1] %>
-        <%= submit "Choisir" %>
-      </form>
-  </li>
-  <li>
-    <div>Équipe 2</div>
-      <ul>
-        <%= for player <- Timesup.GameState.team_2(@game) do %>
-          <li>
-            <%= player.name %>
-            <%= if player.name == @current_user do %> (vous)<% end %>
-          </li>
-        <% end %>
-      </ul>
-      <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_2] %>
-        <%= submit "Choisir" %>
-      </form>
-  </li>
-</ul>
+    <% end %>
+    <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_1] %>
+      <%= submit "Rejoindre" %>
+    </form>
+  </div>
+  <h2>Équipe 2</h2>
+  <div class="team">
+    <%= if Timesup.GameState.team_2(@game) != [] do %>
+        <ul class="player-list">
+          <%= for player <- Timesup.GameState.team_2(@game) do %>
+            <li class="player">
+              <%= player.name %>
+              <%= if player.name == @current_user do %> (vous)<% end %>
+            </li>
+          <% end %>
+        </ul>
+    <% end %>
+    <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_2] %>
+      <%= submit "Rejoindre" %>
+    </form>
+  </div>
 
-<%= if Timesup.GameState.players_with_no_team(@game) == [] do %>
-  <%= f = form_for :start_game, "#", [phx_submit: :start_game] %>
-    <%= submit "C'est parti !" %>
-  </form>
-<% end %>
+  <%= if Timesup.GameState.players_with_no_team(@game) == [] do %>
+    <%= f = form_for :start_game, "#", [phx_submit: :start_game] %>
+      <%= submit "C'est parti !" %>
+    </form>
+  <% end %>
+</section>

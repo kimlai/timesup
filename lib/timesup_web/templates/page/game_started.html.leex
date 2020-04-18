@@ -1,72 +1,82 @@
-<%= case @game.round do %>
-  <% :round_1 -> %>
-    <div>Tour 1 : mots illimités, pas le droit de passer la carte</div>
-  <% :round_2 -> %>
-    <div>Tour 2 : un seul mot, vous avez le droit de passer autant de carte que vous voulez</div>
-  <% :round_3 -> %>
-    <div>Tour 2 : aucun mot, on mime. Vous avez le droit de passer autant de carte que vous voulez</div>
-  <% nil -> %>
-    <div>C'est terminé !</div>
-<% end %>
-<%= if !Timesup.GameState.game_over?(@game) do %>
-  <div>C'est à <%= Timesup.GameState.current_player(@game).name %> de faire deviner</div>
-<% end %>
-<ul>
-  <li>
-    <div>Équipe 1</div>
-      <ul>
-        <li>Tour 1: <%= Timesup.GameState.team_1_points(@game).round_1 %> points</li>
-        <li>Tour 2: <%= Timesup.GameState.team_1_points(@game).round_2 %> points</li>
-        <li>Tour 3: <%= Timesup.GameState.team_1_points(@game).round_3 %> points</li>
-      </ul>
-      <ul>
-        <%= for player <- Timesup.GameState.team_1(@game) do %>
-          <li>
-            <%= player.name %>
-            <%= if player.name == @current_user do %> (vous)<% end %>
-          </li>
-        <% end %>
-      </ul>
-  </li>
-  <li>
-    <div>Équipe 2</div>
-      <ul>
-        <li>Tour 1: <%= Timesup.GameState.team_2_points(@game).round_1 %> points</li>
-        <li>Tour 2: <%= Timesup.GameState.team_2_points(@game).round_2 %> points</li>
-        <li>Tour 3: <%= Timesup.GameState.team_2_points(@game).round_3 %> points</li>
-      </ul>
-      <ul>
-        <%= for player <- Timesup.GameState.team_2(@game) do %>
-          <li>
-            <%= player.name %>
-            <%= if player.name == @current_user do %> (vous)<% end %>
-          </li>
-        <% end %>
-      </ul>
-  </li>
-</ul>
-<%= if !Timesup.GameState.game_over?(@game) do %>
-  <div><%= length(@game.deck) %> cartes restantes</div>
-<% end %>
+<section class="game-started">
+  <aside>
+     <b>Équipe 1</b>
+     <div>
+       <ul class="player-list">
+         <%= for player <- Timesup.GameState.team_1(@game) do %>
+           <li class="player">
+             <%= player.name %>
+             <%= if player.name == @current_user do %> (vous)<% end %>
+           </li>
+         <% end %>
+       </ul>
+     </div>
+     <ul>
+       <li>Manche 1: <%= Timesup.GameState.team_1_points(@game).round_1 %> points</li>
+       <li>Manche 2: <%= Timesup.GameState.team_1_points(@game).round_2 %> points</li>
+       <li>Manche 3: <%= Timesup.GameState.team_1_points(@game).round_3 %> points</li>
+     </ul>
+     <b>Équipe 2</b>
+     <div>
+       <ul class="player-list">
+         <%= for player <- Timesup.GameState.team_2(@game) do %>
+           <li class="player">
+             <%= player.name %>
+             <%= if player.name == @current_user do %> (vous)<% end %>
+           </li>
+         <% end %>
+       </ul>
+     </div>
+     <ul>
+       <li>Manche 1: <%= Timesup.GameState.team_2_points(@game).round_1 %> points</li>
+       <li>Manche 2: <%= Timesup.GameState.team_2_points(@game).round_2 %> points</li>
+       <li>Manche 3: <%= Timesup.GameState.team_2_points(@game).round_3 %> points</li>
+     </ul>
+  </aside>
+  <section class="content">
+    <div> <!-- used for horizontal centering -->
+      <%= case @game.round do %>
+        <% :round_1 -> %>
+          <h1>Manche 1</h1><p>Nombre de mots illimités, pas le droit de passer.</p>
+        <% :round_2 -> %>
+          <h1>Manche 2</h1><p>Un seul mot, vous avez le droit de passer autant de carte que vous voulez</p>
+        <% :round_3 -> %>
+          <h1>Manche 3</h1><p>Aucun mot, on mime. Vous avez le droit de passer autant de carte que vous voulez</p>
+        <% nil -> %>
+          <h1>C'est terminé !</h1>
+      <% end %>
 
-<%= if @game.playing do %>
-  <div><%= @game.time_remaining %></div>
-<% end %>
+      <%= if !Timesup.GameState.game_over?(@game) do %>
+        <p>C'est à <b><%= Timesup.GameState.current_player(@game).name %></b> de faire deviner les
+        <%= length(@game.deck) %> cartes restantes.</p>
+      <% end %>
 
-<%= if Timesup.GameState.current_player(@game).name == @current_user do %>
-  <%= if @game.playing do %>
-    <div><%= Timesup.GameState.current_card(@game) %></div>
-    <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
-      <%= submit "Deviné !" %>
-    </form>
-    <%= if @game.round != :round_1 do %>
-      <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
-        <%= submit "Je passe" %>
-      </form>
-    <% end %>
-  <% else %>
-    <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
-      <%= submit "C'est parti !" %>
-    </form>
-  <% end %>
-<% end %>
+      <%= if !Timesup.GameState.game_over?(@game) do %>
+      <% end %>
+
+      <%= if @game.playing do %>
+        <span class="time-remaining"><%= @game.time_remaining %></span>
+      <% end %>
+
+      <%= if Timesup.GameState.current_player(@game).name == @current_user do %>
+        <%= if @game.playing do %>
+          <span class="current-card"><%= Timesup.GameState.current_card(@game) %></span>
+          <div class="actions">
+            <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
+              <%= submit "Deviné !" %>
+            </form>
+            <%= if @game.round != :round_1 do %>
+              <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
+                <%= submit "Je passe" %>
+              </form>
+            <% end %>
+          </div>
+        <% else %>
+          <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
+            <%= submit "C'est parti !" %>
+          </form>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</section>

@@ -1,1 +1,186 @@
-/* This file is for your main application css. */
+@import "./css-reset.css";
+
+:root {
+  scroll-behavior: smooth;
+  --ratio: 1.4;
+  --measure: 65ch;
+  --s-4: calc(var(--s-3) / var(--ratio));
+  --s-3: calc(var(--s-2) / var(--ratio));
+  --s-2: calc(var(--s-1) / var(--ratio));
+  --s-1: calc(var(--s0) / var(--ratio));
+  --s0: 1rem;
+  --s1: calc(var(--s0) * var(--ratio));
+  --s2: calc(var(--s1) * var(--ratio));
+  --s3: calc(var(--s2) * var(--ratio));
+  --s4: calc(var(--s3) * var(--ratio));
+  --s5: calc(var(--s4) * var(--ratio));
+  --s6: calc(var(--s5) * var(--ratio));
+  --s7: calc(var(--s6) * var(--ratio));
+  --s8: calc(var(--s7) * var(--ratio));
+  font-size: calc(0.333vw + 1em);
+  font-family: sans-serif;
+}
+
+body {
+  padding: 0 var(--s0);
+}
+
+h1 {
+  font-size: var(--s3);
+}
+
+button {
+  background: black;
+  color: white;
+  border: none;
+  padding: var(--s-1) var(--s2);
+  font-weight: 600;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.centered {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* the csrf protection hidden input fucks things up */
+form > *:not([type="hidden"]) + * {
+  margin-top: var(--s-1);
+}
+
+label,
+input {
+  display: block;
+}
+label {
+  font-weight: bold;
+}
+
+.deck-building {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: var(--s0);
+  padding-bottom: var(--s4);
+}
+.deck-building > * + * {
+  margin-top: var(--s1);
+}
+
+.share-link {
+  width: 100%;
+}
+
+.card-list .card {
+  border: solid;
+  display: inline-block;
+  padding: var(--s1);
+  border-radius: var(--s-1);
+  min-width: 15ch;
+  text-align: center;
+  margin-bottom: var(--s0);
+}
+
+.choose-teams {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: var(--s0);
+}
+.choose-teams > * + * {
+  margin-top: var(--s2);
+}
+.choose-teams h2 {
+  border-top: 4px dashed;
+  padding-top: var(--s1);
+}
+.team > * + * {
+  margin-top: var(--s1);
+}
+
+/* https://every-layout.dev/layouts/cluster/ */
+ul.player-list {
+  --space: var(--s0);
+  display: flex;
+  flex-wrap: wrap;
+  /* ↓ multiply by -1 to negate the halved value */
+  margin: calc(var(--space) / 2 * -1);
+}
+
+.player-list > * {
+  /* ↓ half the value, because of the 'doubling up' */
+  margin: calc(var(--space) / 2);
+}
+
+.player {
+  padding: var(--s-4) var(--s0);
+  border: solid;
+}
+
+.game-started {
+  min-height: 100vh;
+}
+.game-started aside > * + * {
+  margin-top: var(--s0);
+}
+.game-started > * {
+  padding: var(--s3) var(--s0);
+}
+.game-started aside {
+  border-right: 4px dashed;
+}
+.game-started .content > * {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* https://every-layout.dev/layouts/sidebar/ */
+.game-started {
+  display: flex;
+  flex-wrap: wrap-reverse;
+}
+.game-started aside {
+  flex-basis: 20rem;
+  flex-grow: 1;
+}
+.game-started .content {
+  flex-basis: 0;
+  flex-grow: 999;
+}
+
+.game-started .content > div > * + * {
+  margin-top: var(--s2);
+}
+
+.time-remaining {
+  font-size: var(--s4);
+  margin: 0 var(--s4);
+  display: inline-block;
+  min-width: 2ch;
+  text-align: center;
+}
+
+.current-card {
+  font-size: var(--s2);
+  border: solid;
+  display: inline-block;
+  padding: var(--s4);
+  border-radius: var(--s-1);
+  min-width: 12ch;
+  max-width: 20ch;
+  text-align: center;
+}
+
+.game-started .actions {
+  display: flex;
+  flex-wrap: wrap;
+}
+.game-started .actions > * {
+  margin-right: var(--s0);
+}

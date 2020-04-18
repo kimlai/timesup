@@ -1,3 +1,5 @@
-<%= form_for @conn, Routes.page_path(@conn, :create_game), [], fn f -> %>
-  <%= submit "Nouvelle partie" %>
-<%= end %>
+<div class="centered">
+  <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
+    <%= submit "Nouvelle partie"%>
+  <%= end %>
+</div>

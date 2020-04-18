@@ -1,28 +1,26 @@
-<div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien
-  <input editable=false value="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>" />
-</div>
-<h1>Joueurs</h1>
-<ul>
-  <%= for player <- Timesup.GameState.get_players(@game) do %>
-    <li>
-      <%= player.name %>
-      <%= if player.ready do %> (prêt.e)<% end %>
-      <%= if player.name == @current_user do %> (vous)<% end %>
-    </li>
-  <% end %>
-</ul>
+<section class="deck-building">
+  <h1>Mise en place</h1>
+  <div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien :
+    <input editable=false value="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>" class="share-link"/>
+  </div>
+  <h2>Joueurs</h2>
+  <div>
+  <ul class="player-list">
+    <%= for player <- Timesup.GameState.get_players(@game) do %>
+      <li class="player">
+        <%= player.name %>
+        <%= if player.ready do %> (prêt.e)<% end %>
+        <%= if player.name == @current_user do %> (vous)<% end %>
+      </li>
+    <% end %>
+  </ul>
+  </div>
 
-<%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) < 6 do %>
-  <%= f = form_for :card, "#", [phx_submit: :add_card] %>
-    <%= label f, :name, "Nouvelle carte" %>
-    <%= text_input f, :name %>
-    <%= submit "Ajouter" %>
-  </form>
-  <% else %>
+  <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) >= 6 do %>
     <%= if Timesup.GameState.all_players_ready?(@game) do %>
       <div>Tout le monde est prêt</div>
       <%= f = form_for :choose_teams, "#", [phx_submit: :start_choosing_teams] %>
-        <%= submit "Faire les équipes" %>
+        <%= submit "Choisir les équipes" %>
       </form>
     <% else %>
       <%= if Timesup.GameState.player_ready?(@game, @current_user) do %>
@@ -33,9 +31,22 @@
         </form>
       <% end %>
     <% end %>
-<% end %>
+  <% end %>
 
-<h2>Vos cartes</h2>
-<%= for card <- Timesup.GameState.get_player_cards(@game, @current_user) do %>
-  <div><%= card %></div>
-<% end %>
+  <h2>Vos cartes</h2>
+    <p>Chaque joueur choisit 6 noms de personalités connues.</p>
+    <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) < 6 do %>
+      <%= f = form_for :card, "#", [phx_submit: :add_card] %>
+        <%= label f, :name, "Nouvelle carte" %>
+        <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
+        <%= submit "Ajouter" %>
+      </form>
+    <% end %>
+  <div>
+    <ul class="card-list">
+      <%= for card <- Timesup.GameState.get_player_cards(@game, @current_user) do %>
+        <li class="card"><%= card %></li>
+      <% end %>
+    </ul>
+  </div>
+</section>
