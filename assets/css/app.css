@@ -101,12 +101,23 @@ label {
 .choose-teams > * + * {
   margin-top: var(--s2);
 }
-.choose-teams h2 {
+
+.choose-teams .team-header {
+  display: flex;
+  align-items: center;
   border-top: 4px dashed;
   padding-top: var(--s1);
 }
+.choose-teams h2 {
+  margin-right: var(--s2);
+}
 .team > * + * {
   margin-top: var(--s1);
+}
+
+.start-game-form {
+  border-top: 4px dashed;
+  padding-top: var(--s1);
 }
 
 /* https://every-layout.dev/layouts/cluster/ */
@@ -153,11 +164,17 @@ ul.player-list {
 }
 .game-started aside {
   flex-basis: 20rem;
+  flex-basis: 60;
   flex-grow: 1;
 }
 .game-started .content {
   flex-basis: 0;
   flex-grow: 999;
+  min-width: 60%;
+}
+
+.game-started .content {
+  padding-bottom: var(--s4);
 }
 
 .game-started .content > div > * + * {

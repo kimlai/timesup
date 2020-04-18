@@ -10,25 +10,35 @@
       <% end %>
     </ul>
   </div>
-  <h2>Équipe 1</h2>
   <div class="team">
+    <div class="team-header">
+      <h2>Équipe 1</h2>
+      <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_1] %>
+        <%= submit "Rejoindre" %>
+      </form>
+    </div>
     <%= if Timesup.GameState.team_1(@game) != [] do %>
-      <ul class="player-list">
-        <%= for player <- Timesup.GameState.team_1(@game) do %>
-          <li class="player">
-            <%= player.name %>
-            <%= if player.name == @current_user do %> (vous)<% end %>
-          </li>
-        <% end %>
-      </ul>
+      <div>
+        <ul class="player-list">
+          <%= for player <- Timesup.GameState.team_1(@game) do %>
+            <li class="player">
+              <%= player.name %>
+              <%= if player.name == @current_user do %> (vous)<% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
-    <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_1] %>
-      <%= submit "Rejoindre" %>
-    </form>
   </div>
-  <h2>Équipe 2</h2>
   <div class="team">
+    <div class="team-header">
+      <h2>Équipe 2</h2>
+      <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_2] %>
+        <%= submit "Rejoindre" %>
+      </form>
+    </div>
     <%= if Timesup.GameState.team_2(@game) != [] do %>
+      <div>
         <ul class="player-list">
           <%= for player <- Timesup.GameState.team_2(@game) do %>
             <li class="player">
@@ -37,14 +47,12 @@
             </li>
           <% end %>
         </ul>
+      </div>
     <% end %>
-    <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_2] %>
-      <%= submit "Rejoindre" %>
-    </form>
   </div>
 
   <%= if Timesup.GameState.players_with_no_team(@game) == [] do %>
-    <%= f = form_for :start_game, "#", [phx_submit: :start_game] %>
+    <%= f = form_for :start_game, "#", [phx_submit: :start_game, class: "start-game-form"] %>
       <%= submit "C'est parti !" %>
     </form>
   <% end %>
