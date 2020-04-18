@@ -36,7 +36,7 @@
   <h2>Vos cartes</h2>
     <p>Chaque joueur choisit 6 noms de personalités connues.</p>
     <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) < 6 do %>
-      <%= f = form_for :card, "#", [phx_submit: :add_card] %>
+      <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
         <div>
           <%= label f, :name, "Nouvelle carte" %>
           <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>

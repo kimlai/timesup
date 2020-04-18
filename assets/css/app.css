@@ -84,6 +84,12 @@ label {
   width: 100%;
 }
 
+.add-card-form {
+  display: inline-block;
+  border: 4px solid;
+  padding: var(--s1);
+}
+
 .card-list .card {
   border: solid;
   display: inline-block;
