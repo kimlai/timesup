@@ -27,6 +27,11 @@ body {
 
 h1 {
   font-size: var(--s3);
+  letter-spacing: -3px;
+}
+h2 {
+  font-size: var(--s1);
+  letter-spacing: -1px;
 }
 
 button {
