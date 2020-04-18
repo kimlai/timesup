@@ -21,10 +21,6 @@
   font-family: sans-serif;
 }
 
-body {
-  padding: 0 var(--s0);
-}
-
 h1 {
   font-size: var(--s3);
   letter-spacing: -3px;
@@ -72,6 +68,8 @@ label {
   margin-right: auto;
   padding-top: var(--s0);
   padding-bottom: var(--s4);
+  padding-left: var(--s0);
+  padding-right: var(--s0);
 }
 .deck-building > * + * {
   margin-top: var(--s1);
@@ -95,7 +93,7 @@ label {
   max-width: var(--measure);
   margin-left: auto;
   margin-right: auto;
-  padding-top: var(--s0);
+  padding: var(--s0);
 }
 .choose-teams > * + * {
   margin-top: var(--s2);
@@ -134,10 +132,10 @@ ul.player-list {
   margin-top: var(--s0);
 }
 .game-started > * {
-  padding: var(--s3) var(--s0);
+  padding: var(--s3) var(--s1);
 }
 .game-started aside {
-  border-right: 4px dashed;
+  outline: 4px dashed;
 }
 .game-started .content > * {
   max-width: var(--measure);
