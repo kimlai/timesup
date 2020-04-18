@@ -18,6 +18,8 @@
   --s7: calc(var(--s6) * var(--ratio));
   --s8: calc(var(--s7) * var(--ratio));
 
+  --line-height-small: calc(0.6 * var(--ratio));
+
   font-size: calc(0.333vw + 1em);
   font-family: Arial, sans-serif;
 }
@@ -26,6 +28,7 @@ h1 {
   font-size: var(--s3);
   letter-spacing: -3px;
   font-weight: bold;
+  line-height: var(--line-height-small);
 }
 h2 {
   font-size: var(--s1);
@@ -49,6 +52,28 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.home {
+  padding: 0 var(--s0);
+}
+
+.home > * + * {
+  margin-top: var(--s3);
+}
+
+.home form {
+  text-align: center;
+}
+
+.home h1 {
+  font-size: var(--s5);
+}
+.home h1 .online {
+  font-size: var(--s3);
+}
+.home-header p {
+  margin-top: var(--s1);
 }
 
 /* the csrf protection hidden input fucks things up */
@@ -160,7 +185,7 @@ ul.player-list {
   outline: 4px dashed;
 }
 .game-started .round-header > * + * {
-  margin-top: var(--s-4);
+  margin-top: var(--s0);
 }
 .game-started .content > * {
   max-width: var(--measure);

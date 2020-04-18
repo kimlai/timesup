@@ -1,5 +1,13 @@
 <div class="centered">
-  <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
-    <%= submit "Nouvelle partie"%>
-  <%= end %>
+  <div class="home">
+    <div class="home-header">
+      <h1>
+        Time's up <span class="online">online</span>
+      </h1>
+      <p>Pour pouvoir y jouer même quand on est confiné.</p>
+    </div>
+    <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
+      <%= submit "Nouvelle partie"%>
+    <%= end %>
+  </div>
 </div>
