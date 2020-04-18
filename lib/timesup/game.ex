@@ -14,7 +14,7 @@ defmodule Timesup.Game do
     {:ok, game}
   end
 
-  def game(game_id) do
+  def get_game(game_id) do
     GenServer.call(via_tuple(game_id), :game)
   end
 
@@ -27,31 +27,31 @@ defmodule Timesup.Game do
   end
 
   def set_player_ready(game_id, player) do
-    GenServer.cast(via_tuple(game_id), {:set_player_ready, player})
+    GenServer.call(via_tuple(game_id), {:set_player_ready, player})
   end
 
   def start_choosing_teams(game_id) do
-    GenServer.cast(via_tuple(game_id), {:start_choosing_teams})
+    GenServer.call(via_tuple(game_id), {:start_choosing_teams})
   end
 
   def choose_team(game_id, player, team) do
-    GenServer.cast(via_tuple(game_id), {:choose_team, player, team})
+    GenServer.call(via_tuple(game_id), {:choose_team, player, team})
   end
 
   def start_game(game_id) do
-    GenServer.cast(via_tuple(game_id), {:start_game})
+    GenServer.call(via_tuple(game_id), {:start_game})
   end
 
   def start_turn(game_id) do
-    GenServer.cast(via_tuple(game_id), {:start_turn})
+    GenServer.call(via_tuple(game_id), {:start_turn})
   end
 
   def card_guessed(game_id) do
-    GenServer.cast(via_tuple(game_id), {:card_guessed})
+    GenServer.call(via_tuple(game_id), {:card_guessed})
   end
 
   def pass_card(game_id) do
-    GenServer.cast(via_tuple(game_id), {:pass_card})
+    GenServer.call(via_tuple(game_id), {:pass_card})
   end
 
   defp via_tuple(game_id) do
@@ -78,39 +78,46 @@ defmodule Timesup.Game do
   end
 
   @impl true
-  def handle_cast({:set_player_ready, player}, game) do
-    {:noreply, GameState.set_player_ready(game, player)}
+  def handle_call({:set_player_ready, player}, _from, game) do
+    game = GameState.set_player_ready(game, player)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:start_choosing_teams}, game) do
-    {:noreply, GameState.start_choosing_teams(game)}
+  def handle_call({:start_choosing_teams}, _from, game) do
+    game = GameState.start_choosing_teams(game)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:choose_team, player, team}, game) do
-    {:noreply, GameState.choose_team(game, player, team)}
+  def handle_call({:choose_team, player, team}, _from, game) do
+    game = GameState.choose_team(game, player, team)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:start_game}, game) do
-    {:noreply, GameState.start_game(game)}
+  def handle_call({:start_game}, _from, game) do
+    game = GameState.start_game(game)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:start_turn}, game) do
+  def handle_call({:start_turn}, _from, game) do
     Process.send_after(self(), :tick, 1000)
-    {:noreply, GameState.start_turn(game)}
+    game = GameState.start_turn(game)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:card_guessed}, game) do
-    {:noreply, GameState.card_guessed(game)}
+  def handle_call({:card_guessed}, _from, game) do
+    game = GameState.card_guessed(game)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:pass_card}, game) do
-    {:noreply, GameState.pass_card(game)}
+  def handle_call({:pass_card}, _from, game) do
+    game = GameState.pass_card(game)
+    {:reply, game, game}
   end
 
   @impl true
@@ -121,7 +128,7 @@ defmodule Timesup.Game do
       Process.send_after(self(), :tick, 1000)
     end
 
-    Phoenix.PubSub.broadcast!(Timesup.PubSub, game.id, :update)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 
     {:noreply, game}
   end
