@@ -4,24 +4,37 @@ defmodule TimesupWeb.GameLive do
   def mount(%{"id" => game_id}, %{"current_user" => user}, socket) do
     if connected?(socket), do: TimesupWeb.Endpoint.subscribe(game_id)
 
+    game =
+      try do
+        Timesup.Game.get_game(game_id)
+      catch
+        # most likely a new deployment destroyed the process
+        :exit, _ ->
+          nil
+      end
+
     socket =
       socket
       |> assign(current_user: user)
-      |> assign(game: Timesup.Game.get_game(game_id))
+      |> assign(game: game)
 
     {:ok, socket}
   end
 
   def render(assigns) do
-    case assigns.game.status do
-      :deck_building ->
-        Phoenix.View.render(TimesupWeb.PageView, "deck_building.html", assigns)
+    if assigns.game == nil do
+      Phoenix.View.render(TimesupWeb.PageView, "404.html", assigns)
+    else
+      case assigns.game.status do
+        :deck_building ->
+          Phoenix.View.render(TimesupWeb.PageView, "deck_building.html", assigns)
 
-      :choosing_teams ->
-        Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
+        :choosing_teams ->
+          Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
 
-      :game_started ->
-        Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
+        :game_started ->
+          Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
+      end
     end
   end
 

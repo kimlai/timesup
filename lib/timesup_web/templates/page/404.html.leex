@@ -1,0 +1,11 @@
+<div class="centered">
+  <div class="not-found">
+    <div class="not-found-header">
+      <h1>404</h1>
+      <p>Impossible de retrouver cette partie. Vous pouvez en créer une nouvelle ⬇</p>
+    </div>
+    <%= form_for :wtf, Routes.page_path(TimesupWeb.Endpoint, :create_game), [class: "new-game-form"], fn f -> %>
+      <%= submit "Nouvelle partie"%>
+    <%= end %>
+  </div>
+</div>

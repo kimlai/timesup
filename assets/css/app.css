@@ -243,3 +243,18 @@ ul.player-list {
 .game-started .actions > * {
   margin-right: var(--s0);
 }
+
+.not-found > * + * {
+  margin-top: var(--s2);
+}
+
+.not-found {
+  text-align: center;
+}
+
+.not-found-header h1 {
+  font-size: var(--s6);
+}
+.not-found-header p {
+  margin-top: var(--s0);
+}
