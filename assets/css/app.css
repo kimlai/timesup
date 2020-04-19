@@ -214,7 +214,7 @@ ul.player-list {
 }
 
 .game-started .content > div > * + * {
-  margin-top: var(--s2);
+  margin-top: var(--s3);
 }
 
 .time-remaining {
@@ -227,21 +227,33 @@ ul.player-list {
 
 .current-card {
   font-size: var(--s2);
-  border: solid;
+  border: 4px solid;
   display: inline-block;
   padding: var(--s4);
   border-radius: var(--s-1);
-  min-width: 12ch;
+  min-width: 15ch;
   max-width: 20ch;
   text-align: center;
 }
 
+/*https://absolutely.every-layout.dev/layouts/cluster/ */
 .game-started .actions {
+  --space: var(--s0);
+  /* ↓ Suppress horizontal scrolling caused by the negative margin in some circumstances */
+  overflow: hidden;
   display: flex;
   flex-wrap: wrap;
+  /* ↓ multiply by -1 to negate the halved value */
+  margin: calc(var(--space) / 2 * -1);
 }
 .game-started .actions > * {
-  margin-right: var(--s0);
+  /* ↓ half the value, because of the 'doubling up' */
+  margin: calc(var(--space) / 2);
+  border: 4px solid;
+}
+.game-started .pass-card {
+  background: white;
+  color: black;
 }
 
 .not-found > * + * {

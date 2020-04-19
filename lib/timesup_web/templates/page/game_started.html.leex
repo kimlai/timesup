@@ -65,14 +65,14 @@
         <%= if @game.playing do %>
           <span class="current-card"><%= Timesup.GameState.current_card(@game) %></span>
           <div class="actions">
+            <%= if @game.round != :round_1 do %>
+              <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
+                <%= submit "Je passe", class: "pass-card" %>
+              </form>
+            <% end %>
             <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
               <%= submit "Deviné !" %>
             </form>
-            <%= if @game.round != :round_1 do %>
-              <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
-                <%= submit "Je passe" %>
-              </form>
-            <% end %>
           </div>
         <% else %>
           <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
