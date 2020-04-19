@@ -1,6 +1,10 @@
 defmodule Timesup.Game do
+  require Logger
   use GenServer
+  alias Ecto.Multi
   alias Timesup.GameState
+  alias Timesup.Repo
+  alias Timesup.StoredGame
 
   # Client
 
@@ -11,7 +15,24 @@ defmodule Timesup.Game do
 
   @impl true
   def init(game) do
-    {:ok, game}
+    {:ok, game, {:continue, :load_from_database}}
+  end
+
+  @impl true
+  def handle_continue(:load_from_database, game) do
+    game =
+      StoredGame
+      |> Repo.get(game.id)
+      |> case do
+        %StoredGame{} = stored_game ->
+          StoredGame.to_game_state(stored_game)
+
+        # Nothing in the database -> we'll show the 404 page
+        nil ->
+          nil
+      end
+
+    {:noreply, game}
   end
 
   def get_game(game_id) do
@@ -67,38 +88,50 @@ defmodule Timesup.Game do
 
   @impl true
   def handle_call({:join, username}, _from, game) do
-    game = GameState.add_player(game, username)
-    {:reply, game, game}
+    game
+    |> GameState.add_player(username)
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
   def handle_call({:add_card, card, player}, _from, game) do
-    game = GameState.add_card(game, card, player)
-    {:reply, game, game}
+    game
+    |> GameState.add_card(card, player)
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
   def handle_call({:set_player_ready, player}, _from, game) do
-    game = GameState.set_player_ready(game, player)
-    {:reply, game, game}
+    game
+    |> GameState.set_player_ready(player)
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
   def handle_call({:start_choosing_teams}, _from, game) do
-    game = GameState.start_choosing_teams(game)
-    {:reply, game, game}
+    game
+    |> GameState.start_choosing_teams()
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
   def handle_call({:choose_team, player, team}, _from, game) do
-    game = GameState.choose_team(game, player, team)
-    {:reply, game, game}
+    game
+    |> GameState.choose_team(player, team)
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
   def handle_call({:start_game}, _from, game) do
-    game = GameState.start_game(game)
-    {:reply, game, game}
+    game
+    |> GameState.start_game()
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
@@ -110,14 +143,18 @@ defmodule Timesup.Game do
 
   @impl true
   def handle_call({:card_guessed}, _from, game) do
-    game = GameState.card_guessed(game)
-    {:reply, game, game}
+    game
+    |> GameState.card_guessed()
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
   def handle_call({:pass_card}, _from, game) do
-    game = GameState.pass_card(game)
-    {:reply, game, game}
+    game
+    |> GameState.pass_card()
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
@@ -131,5 +168,28 @@ defmodule Timesup.Game do
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 
     {:noreply, game}
+  end
+
+  def write_to_database(%GameState{} = game) do
+    Multi.new()
+    |> Multi.delete(:delete, StoredGame.from_game_state(game))
+    |> Multi.insert(:insert, StoredGame.from_game_state(game))
+    |> Timesup.Repo.transaction()
+    |> case do
+      {:ok, _} ->
+        game
+
+      {:error, failed_operation, failed_value, _} ->
+        Logger.error("""
+        Could not save game #{game.id} because of #{failed_operation}:
+        #{failed_value}
+        """)
+
+        game
+    end
+  end
+
+  defp reply(%GameState{} = game) do
+    {:reply, game, game}
   end
 end

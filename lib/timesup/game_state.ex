@@ -124,7 +124,7 @@ defmodule Timesup.GameState do
       game
       | status: :game_started,
         deck: shuffle_deck(game),
-        player_stack: build_player_stack(team_1(game), team_2(game))
+        player_stack: build_player_stack(game)
     }
   end
 
@@ -208,8 +208,8 @@ defmodule Timesup.GameState do
   defp next_round(:round_2), do: :round_3
   defp next_round(:round_3), do: nil
 
-  defp build_player_stack(team_1, team_2) do
-    {team_1, team_2} = ListExtra.pad(team_1, team_2)
+  def build_player_stack(%GameState{} = game) do
+    {team_1, team_2} = ListExtra.pad(team_1(game), team_2(game))
     build_stack(team_1, team_2)
   end
 

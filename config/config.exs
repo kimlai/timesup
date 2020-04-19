@@ -7,6 +7,9 @@
 # General application configuration
 use Mix.Config
 
+config :timesup,
+  ecto_repos: [Timesup.Repo]
+
 # Configures the endpoint
 config :timesup, TimesupWeb.Endpoint,
   url: [host: "localhost"],

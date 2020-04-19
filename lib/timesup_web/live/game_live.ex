@@ -10,7 +10,12 @@ defmodule TimesupWeb.GameLive do
       catch
         # most likely a new deployment destroyed the process
         :exit, _ ->
-          nil
+          DynamicSupervisor.start_child(
+            Timesup.GameSupervisor,
+            {Timesup.Game, name: {:via, Registry, {Timesup.GameRegistry, game_id}}}
+          )
+
+          Timesup.Game.get_game(game_id)
       end
 
     socket =
