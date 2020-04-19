@@ -11,6 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :timesup, TimesupWeb.Endpoint,
   url: [scheme: "https", host: "timesup.kimlaitrinh.me", port: 443],
+  force_ssl: [rewrite_on: [:x_forwarded_proto], host: nil],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
