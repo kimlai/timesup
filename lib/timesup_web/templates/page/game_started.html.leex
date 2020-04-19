@@ -67,7 +67,7 @@
           <div class="actions">
             <%= if @game.round != :round_1 do %>
               <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
-                <%= submit "Je passe", class: "pass-card" %>
+                <%= submit "Je passe", class: "secondary" %>
               </form>
             <% end %>
             <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>

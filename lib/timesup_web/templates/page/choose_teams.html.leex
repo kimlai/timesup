@@ -14,7 +14,7 @@
     <div class="team-header">
       <h2>Équipe 1</h2>
       <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_1] %>
-        <%= submit "Rejoindre" %>
+        <%= submit "Rejoindre", class: "secondary" %>
       </form>
     </div>
     <%= if Timesup.GameState.team_1(@game) != [] do %>
@@ -34,7 +34,7 @@
     <div class="team-header">
       <h2>Équipe 2</h2>
       <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_2] %>
-        <%= submit "Rejoindre" %>
+        <%= submit "Rejoindre", class: "secondary" %>
       </form>
     </div>
     <%= if Timesup.GameState.team_2(@game) != [] do %>

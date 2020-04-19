@@ -39,8 +39,9 @@ defmodule TimesupWeb.GameLive do
   end
 
   def handle_event("add_card", %{"card" => %{"name" => name}}, %{assigns: assigns} = socket) do
-    {:noreply,
-     assign(socket, :game, Timesup.Game.add_card(assigns.game.id, name, assigns.current_user))}
+    game = Timesup.Game.add_card(assigns.game.id, name, assigns.current_user)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("set_player_ready", %{}, %{assigns: assigns} = socket) do

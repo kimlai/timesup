@@ -51,6 +51,12 @@ defmodule Timesup.GameState do
     |> Map.get(:cards)
   end
 
+  def number_of_cards(%GameState{players: players}) do
+    players
+    |> Enum.flat_map(fn {_, p} -> p.cards end)
+    |> length()
+  end
+
   def set_player_ready(%GameState{players: players} = game, player) do
     %{game | players: Map.update!(players, player, fn p -> %{p | ready: true} end)}
   end
