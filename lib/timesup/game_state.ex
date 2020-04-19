@@ -1,5 +1,6 @@
 defmodule Timesup.GameState do
   alias __MODULE__
+  alias Timesup.ListExtra
 
   defstruct(
     id: nil,
@@ -103,7 +104,7 @@ defmodule Timesup.GameState do
     game
     |> team(team)
     |> Enum.map(fn p -> p.points end)
-    |> Enum.reduce(fn x, acc ->
+    |> Enum.reduce(%{round_1: 0, round_2: 0, round_3: 0}, fn x, acc ->
       %{
         round_1: acc.round_1 + x.round_1,
         round_2: acc.round_2 + x.round_2,
@@ -208,31 +209,15 @@ defmodule Timesup.GameState do
   defp next_round(:round_3), do: nil
 
   defp build_player_stack(team_1, team_2) do
-    cond do
-      length(team_1) < length(team_2) ->
-        build_stack(pad(team_1, team_2), team_2)
-
-      length(team_1) > length(team_2) ->
-        build_stack(pad(team_2, team_1), team_1)
-
-      true ->
-        build_stack(team_1, team_2)
-    end
+    {team_1, team_2} = ListExtra.pad(team_1, team_2)
+    build_stack(team_1, team_2)
   end
 
-  defp build_stack([], _), do: []
+  defp build_stack(team1, []), do: team1
+  defp build_stack([], team2), do: team2
 
   defp build_stack([p | tail], team2) do
     [p | build_stack(team2, tail)]
-  end
-
-  # pad([1, 2], [3, 4, 5]) -> [1, 2, 1]
-  defp pad(l1, l2), do: pad(l1, l2, l1)
-  defp pad(_, [], _), do: []
-  defp pad([], [_ | _] = l2, original_l1), do: pad(original_l1, l2)
-
-  defp pad([head | tail_1], [_ | tail_2], original_l1) do
-    [head | pad(tail_1, tail_2, original_l1)]
   end
 
   def fixture(id) do

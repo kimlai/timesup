@@ -34,7 +34,7 @@
       <p>Vous décidez entre vous du nombre de cartes que chaque joueur écrit.</p>
       <div>Nombre total de cartes : <%= Timesup.GameState.number_of_cards(@game) %></div>
     </div>
-    <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) > 0 && !Timesup.GameState.player_ready?(@game, @current_user) do %>
+    <%= if length(Timesup.GameState.get_player_cards(IO.inspect(@game), @current_user)) > 0 && !Timesup.GameState.player_ready?(@game, @current_user) do %>
       <%= f = form_for :ready, "#", [phx_submit: :set_player_ready] %>
         <%= submit "Je suis prêt.e" %>
       </form>

@@ -45,7 +45,9 @@
           <% :round_3 -> %>
             <h1>Manche 3</h1><p>Aucun mot, on mime. Vous avez le droit de passer autant de carte que vous voulez</p>
           <% nil -> %>
-            <h1>C'est terminé !</h1>
+            <div class="game-over">
+              <h1>C'est terminé !</h1>
+            </div>
         <% end %>
       </div>
 
@@ -54,14 +56,12 @@
         <%= length(@game.deck) %> cartes restantes.</p>
       <% end %>
 
-      <%= if !Timesup.GameState.game_over?(@game) do %>
-      <% end %>
-
       <%= if @game.playing do %>
         <span class="time-remaining"><%= @game.time_remaining %></span>
       <% end %>
 
-      <%= if Timesup.GameState.current_player(@game).name == @current_user do %>
+      <%= if Timesup.GameState.current_player(@game).name == @current_user
+          && !Timesup.GameState.game_over?(@game) do %>
         <%= if @game.playing do %>
           <span class="current-card"><%= Timesup.GameState.current_card(@game) %></span>
           <div class="actions">
