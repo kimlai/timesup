@@ -75,4 +75,5 @@ defmodule Timesup.StoredGame do
   defp parse_round("round_1"), do: :round_1
   defp parse_round("round_2"), do: :round_2
   defp parse_round("round_3"), do: :round_3
+  defp parse_round(nil), do: nil
 end
