@@ -83,6 +83,35 @@ button:hover {
 .home-header p {
   margin-top: var(--s1);
 }
+.home .links > * + * {
+  margin-top: var(--s1);
+}
+.how-does-it-work {
+  text-align: center;
+  display: block;
+}
+.how-does-it-work a {
+  color: black;
+}
+#how-does-it-work {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--s3) var(--s0);
+  min-height: 100vh;
+}
+#how-does-it-work h2 {
+  font-size: var(--s3);
+}
+#how-does-it-work > * + * {
+  margin-top: var(--s3);
+}
+#how-does-it-work ol > * + * {
+  margin-top: var(--s1);
+}
+#how-does-it-work .new-game-form {
+  text-align: center;
+}
 
 /* the csrf protection hidden input fucks things up */
 form > *:not([type="hidden"]) + * {

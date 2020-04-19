@@ -6,8 +6,29 @@
       </h1>
       <p>Pour pouvoir y jouer même quand on est confiné.</p>
     </div>
-    <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
-      <%= submit "Nouvelle partie"%>
-    <%= end %>
+    <div class="links">
+      <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
+        <%= submit "Nouvelle partie"%>
+      <%= end %>
+      <div class="how-does-it-work">
+        <a href="#how-does-it-work">Comment ça marche ?</a>
+      </div>
+    </div>
   </div>
 </div>
+<section id="how-does-it-work">
+  <h2>Comment ça marche ?</h2>
+  <p>
+    <b>Time's up online</b> vous permet de jouer au Time's up tout en respectant les règles de distanciation sociale. Lancer une partie est très simple :
+    <ol>
+      <li><b>Time's up online</b> ne prend pas en charge la vidéo. Pour jouer il vous faudra lancer une réunion en ligne sur votre service de visioconférence favori et inviter les gens avec qui vous voulez jouer.</li>
+      <li>Une fois en ligne avec vos amis, vous pouvez lancer une nouvelle partie grâce au bouton <b>Nouvelle partie</b> ⬇.</li>
+      <li>Envoyez le lien de partage qui vous sera fourni à vos amis afin qu'ils puissent rejoindre la partie.</li>
+      <li>Ensuite c'est comme d'habitude, chaque joueur écrit des noms sur des cartes (virtuelles), on fait des équipes, et on joue !</li>
+    </ol>
+  </p>
+  <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
+    <%= submit "Nouvelle partie"%>
+  <%= end %>
+  </p>
+</section>
