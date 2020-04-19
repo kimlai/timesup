@@ -18,7 +18,8 @@
   --s7: calc(var(--s6) * var(--ratio));
   --s8: calc(var(--s7) * var(--ratio));
 
-  --line-height-small: calc(0.6 * var(--ratio));
+  --line-height-small: calc(0.8 * var(--ratio));
+  --line-height-very-small: calc(0.6 * var(--ratio));
 
   font-size: calc(0.333vw + 1em);
   font-family: Arial, sans-serif;
@@ -74,6 +75,7 @@ button:hover {
 
 .home h1 {
   font-size: var(--s5);
+  line-height: var(--line-height-very-small);
 }
 .home h1 .online {
   font-size: var(--s3);
@@ -102,7 +104,7 @@ label {
   max-width: var(--measure);
   margin-left: auto;
   margin-right: auto;
-  padding: var(--s3) 0;
+  padding: var(--s3) var(--s0);
 }
 .deck-building > * + * {
   margin-top: var(--s2);
@@ -140,7 +142,7 @@ ul.card-list {
   max-width: var(--measure);
   margin-left: auto;
   margin-right: auto;
-  padding: var(--s3) 0;
+  padding: var(--s3) var(--s0);
 }
 .choose-teams > * + * {
   margin-top: var(--s2);
