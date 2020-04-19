@@ -26,7 +26,7 @@ defmodule TimesupWeb.PageController do
 
     conn
     |> put_session(:current_user, username)
-    |> redirect(to: "/game/#{game_id}")
+    |> redirect(to: Routes.live_path(TimesupWeb.Endpoint, TimesupWeb.GameLive, game_id))
   end
 
   # stolen from https://elixirforum.com/t/generating-alphanumeric-strings-for-permalinks/11540/5
