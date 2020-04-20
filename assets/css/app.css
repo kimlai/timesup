@@ -319,9 +319,9 @@ ul.player-list {
   margin: calc(var(--space) / 2);
 }
 
-.game-over {
+.game-over h1 {
   padding-top: var(--s6);
-  padding-bottom: var(--s6);
+  padding-bottom: var(--s4);
 }
 
 .not-found > * + * {
