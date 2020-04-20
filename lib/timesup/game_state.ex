@@ -12,7 +12,8 @@ defmodule Timesup.GameState do
     player_stack: [],
     playing: false,
     time_remaining: @seconds_per_turn,
-    round: :round_1
+    round: :round_1,
+    show_round_intro: true
   )
 
   def new(id) do
@@ -197,7 +198,8 @@ defmodule Timesup.GameState do
       game
       | round: next_round(game.round),
         deck: shuffle_deck(game),
-        time_remaining: @seconds_per_turn
+        time_remaining: @seconds_per_turn,
+        show_round_intro: true
     }
   end
 
@@ -217,6 +219,10 @@ defmodule Timesup.GameState do
 
   defp build_stack([p | tail], team2) do
     [p | build_stack(team2, tail)]
+  end
+
+  def start_round(%GameState{} = game) do
+    %{game | show_round_intro: false}
   end
 
   def fixture(id) do

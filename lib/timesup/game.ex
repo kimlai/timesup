@@ -75,6 +75,10 @@ defmodule Timesup.Game do
     GenServer.call(via_tuple(game_id), {:pass_card})
   end
 
+  def start_round(game_id) do
+    GenServer.call(via_tuple(game_id), :start_round)
+  end
+
   defp via_tuple(game_id) do
     {:via, Registry, {Timesup.GameRegistry, game_id}}
   end
@@ -154,6 +158,13 @@ defmodule Timesup.Game do
     game
     |> GameState.pass_card()
     |> write_to_database()
+    |> reply()
+  end
+
+  @impl true
+  def handle_call(:start_round, _from, game) do
+    game
+    |> GameState.start_round()
     |> reply()
   end
 

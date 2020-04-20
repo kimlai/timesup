@@ -214,6 +214,23 @@ ul.player-list {
   border: solid;
 }
 
+.round-intro {
+  padding: var(--s3) var(--s1);
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
+.round-intro > * + * {
+  margin-top: var(--s2);
+}
+.round-intro ul > * + * {
+  margin-top: var(--s1);
+}
+.round-intro .cta {
+  margin-top: var(--s3);
+  text-align: center;
+}
+
 .game-started {
   min-height: 100vh;
 }
@@ -294,9 +311,8 @@ ul.player-list {
 }
 
 .game-over {
-  display: flex;
-  justify-content: center;
-  padding-top: var(--s4);
+  padding-top: var(--s6);
+  padding-bottom: var(--s6);
 }
 
 .not-found > * + * {

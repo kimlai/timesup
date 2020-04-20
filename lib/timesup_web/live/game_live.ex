@@ -26,8 +26,8 @@ defmodule TimesupWeb.GameLive do
     {:ok, socket}
   end
 
-  def render(assigns) do
-    if assigns.game == nil do
+  def render(%{game: game} = assigns) do
+    if game == nil do
       Phoenix.View.render(TimesupWeb.PageView, "404.html", assigns)
     else
       case assigns.game.status do
@@ -38,7 +38,11 @@ defmodule TimesupWeb.GameLive do
           Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
 
         :game_started ->
-          Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
+          if game.show_round_intro and game.round != nil do
+            Phoenix.View.render(TimesupWeb.PageView, "intro_#{game.round}.html", assigns)
+          else
+            Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
+          end
       end
     end
   end
@@ -89,6 +93,12 @@ defmodule TimesupWeb.GameLive do
 
   def handle_event("pass_card", %{}, %{assigns: assigns} = socket) do
     game = Timesup.Game.pass_card(assigns.game.id)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    {:noreply, assign(socket, game: game)}
+  end
+
+  def handle_event("start_round", _, %{assigns: assigns} = socket) do
+    game = Timesup.Game.start_round(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
