@@ -2,6 +2,8 @@ defmodule Timesup.GameState do
   alias __MODULE__
   alias Timesup.ListExtra
 
+  @seconds_per_turn 30
+
   defstruct(
     id: nil,
     status: :deck_building,
@@ -9,7 +11,7 @@ defmodule Timesup.GameState do
     deck: [],
     player_stack: [],
     playing: false,
-    time_remaining: 60,
+    time_remaining: @seconds_per_turn,
     round: :round_1
   )
 
@@ -143,9 +145,6 @@ defmodule Timesup.GameState do
     %{game | playing: true}
   end
 
-  def seconds_per_turn(:round_1), do: 60
-  def seconds_per_turn(_), do: 30
-
   def tick(%GameState{playing: false} = game), do: game
 
   def tick(%GameState{} = game) do
@@ -161,7 +160,7 @@ defmodule Timesup.GameState do
   defp end_turn(%GameState{player_stack: [head | tail]} = game) do
     %{
       game
-      | time_remaining: seconds_per_turn(game.round),
+      | time_remaining: @seconds_per_turn,
         playing: false,
         player_stack: tail ++ [head]
     }
@@ -198,7 +197,7 @@ defmodule Timesup.GameState do
       game
       | round: next_round(game.round),
         deck: shuffle_deck(game),
-        time_remaining: seconds_per_turn(next_round(game.round))
+        time_remaining: @seconds_per_turn
     }
   end
 
@@ -295,7 +294,7 @@ defmodule Timesup.GameState do
       deck: [],
       player_stack: [],
       playing: false,
-      time_remaining: 60
+      time_remaining: @seconds_per_turn
     }
     |> start_game()
   end
