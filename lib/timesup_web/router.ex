@@ -1,5 +1,6 @@
 defmodule TimesupWeb.Router do
   use TimesupWeb, :router
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,6 +9,10 @@ defmodule TimesupWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :put_root_layout, {TimesupWeb.LayoutView, :root}
+  end
+
+  pipeline :admin do
+    plug :auth
   end
 
   scope "/", TimesupWeb do
@@ -19,5 +24,25 @@ defmodule TimesupWeb.Router do
     post "/game/:id/join", PageController, :join_game
 
     live "/game/:id", GameLive
+  end
+
+  scope "/", TimesupWeb do
+    pipe_through [:browser, :admin]
+    live_dashboard "/dashboard"
+  end
+
+  # https://hexdocs.pm/plug/1.10.0/Plug.BasicAuth.html#module-low-level-usage
+  defp auth(conn, _opts) do
+    with {user, password} <- Plug.BasicAuth.parse_basic_auth(conn),
+         true <- check_credentials(user, password) do
+      conn
+    else
+      _ -> conn |> Plug.BasicAuth.request_basic_auth() |> halt()
+    end
+  end
+
+  defp check_credentials(user, password) do
+    Plug.Crypto.secure_compare(user, System.get_env("ADMIN_USER")) &&
+      Plug.Crypto.secure_compare(password, System.get_env("ADMIN_PASSWORD"))
   end
 end
