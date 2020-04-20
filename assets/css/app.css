@@ -184,7 +184,7 @@ ul.card-list {
   border: solid;
   padding: var(--s1);
   border-radius: var(--s-1);
-  min-width: 15ch;
+  min-width: 13ch;
   text-align: center;
   font-weight: bold;
 }
