@@ -16,7 +16,7 @@
     <%= for player <- Timesup.GameState.get_players(@game) do %>
       <li class="player">
         <%= player.name %>
-        <%= if player.ready do %> (prêt.e)<% end %>
+        <%= if player.ready do %> (prêt·e)<% end %>
         <%= if player.name == @current_user do %> (vous)<% end %>
       </li>
     <% end %>
@@ -43,7 +43,7 @@
     <div>Nombre total de cartes : <%= Timesup.GameState.number_of_cards(@game) %></div>
     <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) > 0 && !Timesup.GameState.player_ready?(@game, @current_user) do %>
       <%= f = form_for :ready, "#", [phx_submit: :set_player_ready] %>
-        <%= submit "Je suis prêt.e" %>
+        <%= submit "Je suis prêt·e" %>
       </form>
     <% end %>
     <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
