@@ -147,6 +147,8 @@ defmodule Timesup.Game do
 
   @impl true
   def handle_call({:card_guessed}, _from, game) do
+    Process.send_after(self(), :clear_card_guessed_flash, 200)
+
     game
     |> GameState.card_guessed()
     |> write_to_database()
@@ -155,6 +157,8 @@ defmodule Timesup.Game do
 
   @impl true
   def handle_call({:pass_card}, _from, game) do
+    Process.send_after(self(), :clear_card_passed_flash, 200)
+
     game
     |> GameState.pass_card()
     |> write_to_database()
@@ -175,6 +179,24 @@ defmodule Timesup.Game do
     if game.playing do
       Process.send_after(self(), :tick, 1000)
     end
+
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+
+    {:noreply, game}
+  end
+
+  @impl true
+  def handle_info(:clear_card_passed_flash, game) do
+    game = GameState.clear_card_passed_flash(game)
+
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+
+    {:noreply, game}
+  end
+
+  @impl true
+  def handle_info(:clear_card_guessed_flash, game) do
+    game = GameState.clear_card_guessed_flash(game)
 
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 

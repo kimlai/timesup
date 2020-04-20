@@ -216,6 +216,7 @@ ul.player-list {
 }
 
 .round-intro {
+  min-height: 100vh;
   padding: var(--s3) var(--s1);
   max-width: var(--measure);
   margin-left: auto;
@@ -230,6 +231,13 @@ ul.player-list {
 .round-intro .cta {
   margin-top: var(--s3);
   text-align: center;
+}
+
+.flash-card-passed {
+  background: #fc3f3f;
+}
+.flash-card-guessed {
+  background: #00ebc7;
 }
 
 .game-started {
