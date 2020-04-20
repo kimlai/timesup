@@ -147,7 +147,7 @@ defmodule Timesup.Game do
 
   @impl true
   def handle_call({:card_guessed}, _from, game) do
-    Process.send_after(self(), :clear_card_guessed_flash, 200)
+    Process.send_after(self(), :clear_card_guessed_flash, 500)
 
     game
     |> GameState.card_guessed()
@@ -157,7 +157,7 @@ defmodule Timesup.Game do
 
   @impl true
   def handle_call({:pass_card}, _from, game) do
-    Process.send_after(self(), :clear_card_passed_flash, 200)
+    Process.send_after(self(), :clear_card_passed_flash, 500)
 
     game
     |> GameState.pass_card()

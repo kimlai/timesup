@@ -15,10 +15,10 @@ let liveSocket = new LiveSocket("/live", Socket, {
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();
-//
-// // expose liveSocket on window for web console debug logs and latency simulation:
-// // >> liveSocket.enableDebug()
-// // >> liveSocket.enableLatencySim(1000)
+
+// expose liveSocket on window for web console debug logs and latency simulation:
+// >> liveSocket.enableDebug()
+// >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket;
 
 new Clipboard(".copy-share-url");

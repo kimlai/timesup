@@ -1,15 +1,4 @@
 <p><%= live_flash(@flash, :info) %></p>
 <p><%= live_flash(@flash, :notice) %></p>
 <p><%= live_flash(@flash, :error) %></p>
-<%= cond do %>
-  <% @game == nil -> %>
-    <div>
-  <% @game.display_card_passed_flash -> %>
-    <div class="flash-card-passed">
-  <%= @game.display_card_guessed_flash -> %>
-    <div class="flash-card-guessed">
-  <%= true -> %>
-    <div>
-<% end %>
-  <%= @inner_content %>
-</div>
+<%= @inner_content %>
