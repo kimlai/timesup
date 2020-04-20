@@ -332,6 +332,9 @@ ul.player-list {
   max-width: 20ch;
   text-align: center;
 }
+.invisible {
+  opacity: 0;
+}
 
 /*https://absolutely.every-layout.dev/layouts/cluster/ */
 .game-started .actions {

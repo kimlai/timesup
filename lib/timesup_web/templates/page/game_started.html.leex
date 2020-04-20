@@ -57,32 +57,39 @@
       </div>
 
       <%= if !Timesup.GameState.game_over?(@game) do %>
-        <p>C'est à <b><%= Timesup.GameState.current_player(@game).name %></b> de faire deviner les
-        <%= length(@game.deck) %> cartes restantes.</p>
-      <% end %>
-
-      <%= if @game.playing do %>
-        <span class="time-remaining"><%= @game.time_remaining %></span>
-      <% end %>
-
-      <%= if Timesup.GameState.current_player(@game).name == @current_user
-          && !Timesup.GameState.game_over?(@game) do %>
+        <p>
+          C'est à <b><%= Timesup.GameState.current_player(@game).name %></b> de faire deviner les
+          <%= length(@game.deck) %> cartes restantes.
+        </p>
         <%= if @game.playing do %>
-          <span class="current-card"><%= Timesup.GameState.current_card(@game) %></span>
-          <div class="actions">
-            <%= if @game.round != :round_1 do %>
-              <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
-                <%= submit "Je passe", class: "secondary" %>
+          <span class="time-remaining"><%= @game.time_remaining %></span>
+          <%= if Timesup.GameState.current_player(@game).name != @current_user do %>
+            <span
+              class="current-card <%= if @game.last_card_guessed == nil do %>invisible<% end %>"
+            >
+              <%= @game.last_card_guessed %>
+              <!-- gross hack so that the layout does not change when the card appears -->
+              <%= if @game.last_card_guessed == nil do %>placeholder<% end %>
+            </span>
+          <% else %>
+            <span class="current-card"><%= Timesup.GameState.current_card(@game) %></span>
+            <div class="actions">
+              <%= if @game.round != :round_1 do %>
+                <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
+                  <%= submit "Je passe", class: "secondary" %>
+                </form>
+              <% end %>
+              <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
+                <%= submit "Deviné !" %>
               </form>
-            <% end %>
-            <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
-              <%= submit "Deviné !" %>
-            </form>
-          </div>
+            </div>
+          <% end %>
         <% else %>
-          <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
-            <%= submit "C'est parti !" %>
-          </form>
+          <%= if Timesup.GameState.current_player(@game).name == @current_user do %>
+            <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
+              <%= submit "C'est parti !" %>
+            </form>
+          <% end %>
         <% end %>
       <% end %>
     </div>

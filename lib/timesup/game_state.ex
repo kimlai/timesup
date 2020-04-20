@@ -15,7 +15,8 @@ defmodule Timesup.GameState do
     round: :round_1,
     show_round_intro: true,
     display_card_passed_flash: false,
-    display_card_guessed_flash: false
+    display_card_guessed_flash: false,
+    last_card_guessed: nil
   )
 
   def new(id) do
@@ -145,7 +146,7 @@ defmodule Timesup.GameState do
   def current_card(%GameState{deck: [head | _]}), do: head
 
   def start_turn(%GameState{} = game) do
-    %{game | playing: true}
+    %{game | playing: true, last_card_guessed: nil}
   end
 
   def tick(%GameState{playing: false} = game), do: game
@@ -173,22 +174,23 @@ defmodule Timesup.GameState do
     }
   end
 
-  def card_guessed(%GameState{deck: [_ | []]} = game) do
+  def card_guessed(%GameState{deck: [card | []]} = game) do
     game
-    |> add_point()
+    |> add_point(card)
     |> end_turn()
     |> end_round()
   end
 
-  def card_guessed(%GameState{deck: [_ | tail]} = game) do
+  def card_guessed(%GameState{deck: [card | tail]} = game) do
     %{game | deck: tail}
-    |> add_point()
+    |> add_point(card)
   end
 
-  defp add_point(game) do
+  defp add_point(game, card) do
     %{
       game
       | display_card_guessed_flash: true,
+        last_card_guessed: card,
         players:
           Map.update!(game.players, current_player(game).name, fn p ->
             %{p | points: Map.update!(p.points, game.round, &(&1 + 1))}
