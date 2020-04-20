@@ -30,10 +30,12 @@
   <% end %>
 
   <h2>Les cartes</h2>
-    <div>
-      <p>Vous décidez entre vous du nombre de cartes que chaque joueur écrit.</p>
-      <div>Nombre total de cartes : <%= Timesup.GameState.number_of_cards(@game) %></div>
-    </div>
+    <p>
+      Vous devez consituer une pile de cartes de noms de personalités (plus ou moins) connues. Vous
+      décidez entre vous du nombre de cartes à écrire (il est préférable que tout le monde écrive le
+      même nombre de cartes).
+    </p>
+    <div>Nombre total de cartes : <%= Timesup.GameState.number_of_cards(@game) %></div>
     <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) > 0 && !Timesup.GameState.player_ready?(@game, @current_user) do %>
       <%= f = form_for :ready, "#", [phx_submit: :set_player_ready] %>
         <%= submit "Je suis prêt.e" %>
