@@ -1,9 +1,14 @@
 <section class="deck-building">
   <h1>Mise en place</h1>
   <div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien :
-    <a href="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>"/>
-      <%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>
-    </a>
+    <div class="share-box">
+      <input id="share-url" editable="false" value="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>"/>
+      <span>
+        <button class="copy-share-url" data-clipboard-target="#share-url">
+          Copier
+        </button>
+      </span>
+    </div>
   </div>
   <h2>Joueurs connectés</h2>
   <div>

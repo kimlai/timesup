@@ -18,6 +18,7 @@ import "phoenix_html";
 
 import { Socket } from "phoenix";
 import LiveSocket from "phoenix_live_view";
+import Clipboard from "clipboard";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
@@ -33,3 +34,5 @@ liveSocket.connect();
 // // >> liveSocket.enableDebug()
 // // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket;
+
+new Clipboard(".copy-share-url");
