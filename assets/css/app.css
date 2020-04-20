@@ -40,9 +40,10 @@ h2 {
 button {
   background: black;
   color: white;
-  padding: var(--s-1) var(--s2);
+  padding: var(--s-2) var(--s1);
   font-weight: bold;
   border: 4px solid;
+  border-color: black;
 }
 
 button.secondary {
