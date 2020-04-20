@@ -171,22 +171,24 @@ defmodule Timesup.Game do
   end
 
   def write_to_database(%GameState{} = game) do
-    Multi.new()
-    |> Multi.delete(:delete, StoredGame.from_game_state(game))
-    |> Multi.insert(:insert, StoredGame.from_game_state(game))
-    |> Timesup.Repo.transaction()
-    |> case do
-      {:ok, _} ->
-        game
+    Task.start(fn ->
+      Multi.new()
+      |> Multi.delete(:delete, StoredGame.from_game_state(game))
+      |> Multi.insert(:insert, StoredGame.from_game_state(game))
+      |> Timesup.Repo.transaction()
+      |> case do
+        {:error, failed_operation, failed_value, _} ->
+          Logger.error("""
+          Could not save game #{game.id} because of #{failed_operation}:
+          #{failed_value}
+          """)
 
-      {:error, failed_operation, failed_value, _} ->
-        Logger.error("""
-        Could not save game #{game.id} because of #{failed_operation}:
-        #{failed_value}
-        """)
+        _ ->
+          nil
+      end
+    end)
 
-        game
-    end
+    game
   end
 
   defp reply(%GameState{} = game) do
