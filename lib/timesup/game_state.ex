@@ -160,12 +160,16 @@ defmodule Timesup.GameState do
     end
   end
 
-  defp end_turn(%GameState{player_stack: [head | tail]} = game) do
+  defp end_turn(%GameState{} = game) do
+    [last_player | other_players] = game.player_stack
+    [last_card | other_cards] = game.deck
+
     %{
       game
       | time_remaining: @seconds_per_turn,
         playing: false,
-        player_stack: tail ++ [head]
+        player_stack: other_players ++ [last_player],
+        deck: other_cards ++ [last_card]
     }
   end
 
