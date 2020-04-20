@@ -6,14 +6,10 @@ defmodule Timesup.Application do
   use Application
 
   def start(_type, _args) do
-    # List all child processes to be supervised
     children = [
-      # Start the Ecto repository
       Timesup.Repo,
-      # Start the endpoint when the application starts
+      TimesupWeb.Telemetry,
       TimesupWeb.Endpoint,
-      # Starts a worker by calling: Timesup.Worker.start_link(arg)
-      # {Timesup.Worker, arg},
       {Registry, keys: :unique, name: Timesup.GameRegistry},
       {DynamicSupervisor, strategy: :one_for_one, name: Timesup.GameSupervisor}
     ]

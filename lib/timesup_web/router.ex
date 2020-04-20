@@ -28,7 +28,7 @@ defmodule TimesupWeb.Router do
 
   scope "/", TimesupWeb do
     pipe_through [:browser, :admin]
-    live_dashboard "/dashboard"
+    live_dashboard "/dashboard", metrics: TimesupWeb.Telemetry
   end
 
   # https://hexdocs.pm/plug/1.10.0/Plug.BasicAuth.html#module-low-level-usage
