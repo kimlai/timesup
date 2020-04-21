@@ -37,8 +37,8 @@ defmodule TimesupWeb.PageController do
   end
 
   def join_game(conn, %{"id" => game_id, "username" => username}) do
-    Timesup.Game.join(game_id, username)
-    Phoenix.PubSub.broadcast!(Timesup.PubSub, game_id, :update)
+    game = Timesup.Game.join(game_id, username)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 
     conn
     |> put_session(:current_user, username)
