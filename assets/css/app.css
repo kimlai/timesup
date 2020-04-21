@@ -317,6 +317,7 @@ ul.player-list {
 .time-remaining {
   font-size: var(--s4);
   margin: 0 var(--s4);
+  scroll-margin-top: var(--s3);
   display: inline-block;
   min-width: 2ch;
   text-align: center;

@@ -62,7 +62,9 @@
           <%= length(@game.deck) %> cartes restantes.
         </p>
         <%= if @game.playing do %>
-          <span class="time-remaining"><%= @game.time_remaining %></span>
+          <span id="time-remaining" phx-hook="RemainingTime" class="time-remaining">
+            <%= @game.time_remaining %>
+          </span>
           <%= if Timesup.GameState.current_player(@game) != @current_user do %>
             <span
               class="current-card <%= if @game.last_card_guessed == nil do %>invisible<% end %>"

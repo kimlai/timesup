@@ -16,7 +16,6 @@ let liveSocket = new LiveSocket("/live", Socket, {
       updated() {
         event = this.el.dataset.event;
         if (event !== "") {
-          console.log(event);
           this.pushEvent("blink_received");
           const overlay = document.createElement("div");
           overlay.className = "blink-overlay";
@@ -24,6 +23,11 @@ let liveSocket = new LiveSocket("/live", Socket, {
           document.body.append(overlay);
           setTimeout(() => overlay.remove(), 500);
         }
+      }
+    },
+    RemainingTime: {
+      mounted() {
+        this.el.scrollIntoView();
       }
     }
   }
