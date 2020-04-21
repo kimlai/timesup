@@ -56,7 +56,7 @@
     <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
       <div>
         <%= label f, :name, "Nouvelle carte" %>
-        <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
+        <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra...", required: true%>
       </div>
       <%= submit "Ajouter" %>
     </form>

@@ -2,7 +2,7 @@
   <%= form_for @conn, Routes.page_path(@conn, :join_game, @id), [class: "join-game-form"], fn f -> %>
     <div>
       <%= label f, :username, "Votre nom" %>
-      <%= text_input f, :username, value: "" %>
+      <%= text_input f, :username, value: "", required: true %>
     </div>
     <%= submit "Valider" %>
   <%= end %>
