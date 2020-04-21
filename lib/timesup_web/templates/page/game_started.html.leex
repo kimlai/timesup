@@ -58,12 +58,12 @@
 
       <%= if !Timesup.GameState.game_over?(@game) do %>
         <p>
-          C'est à <b><%= Timesup.GameState.current_player(@game).name %></b> de faire deviner les
+          C'est à <b><%= Timesup.GameState.current_player(@game) %></b> de faire deviner les
           <%= length(@game.deck) %> cartes restantes.
         </p>
         <%= if @game.playing do %>
           <span class="time-remaining"><%= @game.time_remaining %></span>
-          <%= if Timesup.GameState.current_player(@game).name != @current_user do %>
+          <%= if Timesup.GameState.current_player(@game) != @current_user do %>
             <span
               class="current-card <%= if @game.last_card_guessed == nil do %>invisible<% end %>"
             >
@@ -85,7 +85,7 @@
             </div>
           <% end %>
         <% else %>
-          <%= if Timesup.GameState.current_player(@game).name == @current_user do %>
+          <%= if Timesup.GameState.current_player(@game) == @current_user do %>
             <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
               <%= submit "C'est parti !" %>
             </form>

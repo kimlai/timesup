@@ -18,6 +18,7 @@ defmodule Timesup.StoredGame do
     field(:players, :map)
     field(:status, :string)
     field(:round, :string)
+    field(:teams, :map)
 
     timestamps()
   end
@@ -28,20 +29,21 @@ defmodule Timesup.StoredGame do
       deck: game.deck,
       players: game.players,
       status: Atom.to_string(game.status),
-      round: Atom.to_string(game.round)
+      round: Atom.to_string(game.round),
+      teams: game.teams |> Enum.with_index() |> Enum.map(fn {k, v} -> {v, k} end) |> Map.new()
     }
   end
 
   def to_game_state(%StoredGame{} = game) do
-    state = %GameState{
+    %GameState{
       id: game.id,
       deck: game.deck,
       players: Enum.map(game.players, &parse_player/1) |> Map.new(),
       status: parse_status(game.status),
-      round: parse_round(game.round)
+      round: parse_round(game.round),
+      teams: game.teams |> Map.values(),
+      player_stack: game.teams |> Map.values()
     }
-
-    %{state | player_stack: GameState.build_player_stack(state)}
   end
 
   defp parse_player(
@@ -50,8 +52,7 @@ defmodule Timesup.StoredGame do
             "cards" => cards,
             "name" => name,
             "points" => %{"round_1" => round_1, "round_2" => round_2, "round_3" => round_3},
-            "ready" => ready?,
-            "team" => team
+            "ready" => ready?
           }}
        ) do
     {k,
@@ -59,18 +60,13 @@ defmodule Timesup.StoredGame do
        cards: cards,
        name: name,
        points: %{round_1: round_1, round_2: round_2, round_3: round_3},
-       ready: ready?,
-       team: parse_team(team)
+       ready: ready?
      }}
   end
 
   defp parse_status("deck_building"), do: :deck_building
   defp parse_status("choosing_teams"), do: :choosing_teams
   defp parse_status("game_started"), do: :game_started
-
-  defp parse_team("team_1"), do: :team_1
-  defp parse_team("team_2"), do: :team_2
-  defp parse_team(nil), do: nil
 
   defp parse_round("round_1"), do: :round_1
   defp parse_round("round_2"), do: :round_2

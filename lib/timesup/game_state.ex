@@ -14,7 +14,8 @@ defmodule Timesup.GameState do
     time_remaining: @seconds_per_turn,
     round: :round_1,
     show_round_intro: true,
-    last_card_guessed: nil
+    last_card_guessed: nil,
+    teams: [[], []]
   )
 
   def new(id) do
@@ -78,35 +79,46 @@ defmodule Timesup.GameState do
     %{game | status: :choosing_teams}
   end
 
-  def choose_team(%GameState{} = game, player, team) do
-    %{game | players: Map.update!(game.players, player, fn p -> %{p | team: team} end)}
+  def choose_team(%GameState{teams: teams} = game, player, team_index)
+      when is_integer(team_index) and 0 <= team_index and team_index < length(teams) do
+    %{
+      game
+      | teams:
+          teams
+          |> remove_from_all_teams(player)
+          |> List.replace_at(team_index, Enum.at(teams, team_index) ++ [player])
+    }
+  end
+
+  defp remove_from_all_teams(teams, player) do
+    Enum.map(teams, fn team -> Enum.reject(team, fn p -> p == player end) end)
   end
 
   def team_1(%GameState{} = game) do
-    team(game, :team_1)
+    team(game, 0)
   end
 
   def team_2(%GameState{} = game) do
-    team(game, :team_2)
+    team(game, 1)
   end
 
-  defp team(%GameState{players: players} = game, team) do
-    players
-    |> Map.values()
-    |> Enum.filter(fn p -> p.team == team end)
+  defp team(%GameState{players: players} = game, team_index) do
+    game.teams
+    |> Enum.at(team_index)
+    |> Enum.map(fn p -> Map.get(game.players, p) end)
   end
 
   def team_1_points(%GameState{} = game) do
-    team_points(game, :team_1)
+    team_points(game, 0)
   end
 
   def team_2_points(%GameState{} = game) do
-    team_points(game, :team_2)
+    team_points(game, 1)
   end
 
-  defp team_points(%GameState{} = game, team) do
+  defp team_points(%GameState{} = game, team_index) do
     game
-    |> team(team)
+    |> team(team_index)
     |> Enum.map(fn p -> p.points end)
     |> Enum.reduce(%{round_1: 0, round_2: 0, round_3: 0}, fn x, acc ->
       %{
@@ -118,9 +130,11 @@ defmodule Timesup.GameState do
   end
 
   def players_with_no_team(%GameState{players: players} = game) do
+    players_with_team = List.flatten(game.teams)
+
     players
     |> Map.values()
-    |> Enum.filter(fn p -> p.team == nil end)
+    |> Enum.reject(fn p -> Enum.member?(players_with_team, p.name) end)
   end
 
   def start_game(%GameState{} = game) do
@@ -128,7 +142,7 @@ defmodule Timesup.GameState do
       game
       | status: :game_started,
         deck: shuffle_deck(game),
-        player_stack: build_player_stack(game)
+        player_stack: game.teams
     }
   end
 
@@ -138,7 +152,7 @@ defmodule Timesup.GameState do
     |> Enum.shuffle()
   end
 
-  def current_player(%GameState{player_stack: [head | _]}), do: head
+  def current_player(%GameState{player_stack: [[head | _] | _]}), do: head
 
   def current_card(%GameState{deck: []}), do: nil
   def current_card(%GameState{deck: [head | _]}), do: head
@@ -160,14 +174,14 @@ defmodule Timesup.GameState do
   end
 
   defp end_turn(%GameState{} = game) do
-    [last_player | other_players] = game.player_stack
+    [[last_player | other_players] | other_teams] = game.player_stack
     [last_card | other_cards] = game.deck
 
     %{
       game
       | time_remaining: @seconds_per_turn,
         playing: false,
-        player_stack: other_players ++ [last_player],
+        player_stack: other_teams ++ [other_players ++ [last_player]],
         deck: other_cards ++ [last_card]
     }
   end
@@ -189,7 +203,7 @@ defmodule Timesup.GameState do
       game
       | last_card_guessed: card,
         players:
-          Map.update!(game.players, current_player(game).name, fn p ->
+          Map.update!(game.players, current_player(game), fn p ->
             %{p | points: Map.update!(p.points, game.round, &(&1 + 1))}
           end)
     }
@@ -214,18 +228,6 @@ defmodule Timesup.GameState do
   defp next_round(:round_1), do: :round_2
   defp next_round(:round_2), do: :round_3
   defp next_round(:round_3), do: nil
-
-  def build_player_stack(%GameState{} = game) do
-    {team_1, team_2} = ListExtra.pad(team_1(game), team_2(game))
-    build_stack(team_1, team_2)
-  end
-
-  defp build_stack(team1, []), do: team1
-  defp build_stack([], team2), do: team2
-
-  defp build_stack([p | tail], team2) do
-    [p | build_stack(team2, tail)]
-  end
 
   def start_round(%GameState{} = game) do
     %{game | show_round_intro: false}

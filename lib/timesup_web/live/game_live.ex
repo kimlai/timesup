@@ -67,11 +67,17 @@ defmodule TimesupWeb.GameLive do
   end
 
   def handle_event("choose_team_1", %{}, socket) do
-    choose_team(:team_1, socket)
+    choose_team(0, socket)
   end
 
   def handle_event("choose_team_2", %{}, socket) do
-    choose_team(:team_2, socket)
+    choose_team(1, socket)
+  end
+
+  defp choose_team(team, %{assigns: assigns} = socket) do
+    game = Timesup.Game.choose_team(assigns.game.id, assigns.current_user, team)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("start_game", %{}, %{assigns: assigns} = socket) do
@@ -103,12 +109,6 @@ defmodule TimesupWeb.GameLive do
 
   def handle_event("start_round", _, %{assigns: assigns} = socket) do
     game = Timesup.Game.start_round(assigns.game.id)
-    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
-  end
-
-  defp choose_team(team, %{assigns: assigns} = socket) do
-    game = Timesup.Game.choose_team(assigns.game.id, assigns.current_user, team)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
