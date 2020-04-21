@@ -22,11 +22,13 @@ defmodule Timesup.GameState do
   end
 
   def add_player(%GameState{} = game, player) do
+    player_name = String.trim(player)
+
     %{
       game
       | players:
-          Map.put_new(game.players, player, %{
-            name: player,
+          Map.put_new(game.players, player_name, %{
+            name: player_name,
             ready: false,
             cards: [],
             team: nil,
