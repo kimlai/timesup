@@ -2,10 +2,8 @@
 <p><%= live_flash(@flash, :notice) %></p>
 <p><%= live_flash(@flash, :error) %></p>
 <%= @inner_content %>
-<%= if @game != nil && @game.display_card_passed_flash do %>
-  <div class="flashing-background passed" />
-<% end %>
-
-<%= @game != nil && if @game.display_card_guessed_flash do %>
-  <div class="flashing-background guessed" />
-<% end %>
+<div
+  id="blink"
+  phx-hook="Blink"
+  data-event="<%= @blink %>"
+></div>

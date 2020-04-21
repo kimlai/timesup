@@ -21,6 +21,7 @@ defmodule TimesupWeb.GameLive do
     socket =
       socket
       |> assign(current_user: user)
+      |> assign(blink: "")
       |> assign(game: game)
 
     {:ok, socket}
@@ -88,12 +89,15 @@ defmodule TimesupWeb.GameLive do
   def handle_event("card_guessed", %{}, %{assigns: assigns} = socket) do
     game = Timesup.Game.card_guessed(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_guessed"})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("pass_card", %{}, %{assigns: assigns} = socket) do
     game = Timesup.Game.pass_card(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_passed"})
+
     {:noreply, assign(socket, game: game)}
   end
 
@@ -111,5 +115,13 @@ defmodule TimesupWeb.GameLive do
 
   def handle_info(%{event: "update", payload: %{game: game}}, socket) do
     {:noreply, assign(socket, game: game)}
+  end
+
+  def handle_info(%{event: "blink", payload: %{type: type}}, socket) do
+    {:noreply, assign(socket, blink: type)}
+  end
+
+  def handle_event("blink_received", _, %{assigns: assigns} = socket) do
+    {:noreply, assign(socket, blink: "")}
   end
 end

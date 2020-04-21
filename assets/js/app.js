@@ -10,7 +10,23 @@ let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
-  params: { _csrf_token: csrfToken }
+  params: { _csrf_token: csrfToken },
+  hooks: {
+    Blink: {
+      updated() {
+        event = this.el.dataset.event;
+        if (event !== "") {
+          console.log(event);
+          this.pushEvent("blink_received");
+          const overlay = document.createElement("div");
+          overlay.className = "blink-overlay";
+          overlay.classList.add(event);
+          document.body.append(overlay);
+          setTimeout(() => overlay.remove(), 500);
+        }
+      }
+    }
+  }
 });
 
 // connect if there are any LiveViews on the page
