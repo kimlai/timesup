@@ -240,6 +240,14 @@ defmodule Timesup.Game do
     %{game | show_round_intro: false}
   end
 
+  def delete_card(%Game{players: players} = game, player, index) do
+    %{
+      game
+      | players:
+          Map.update!(players, player, fn p -> %{p | cards: List.delete_at(p.cards, index)} end)
+    }
+  end
+
   def fixture(id) do
     %Game{
       id: id,

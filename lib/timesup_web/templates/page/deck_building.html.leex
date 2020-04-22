@@ -44,15 +44,22 @@
     <% end %>
   <div>
     <ul class="card-list">
-      <%= for card <- Timesup.Game.get_player_cards(@game, @current_user) do %>
-        <li class="card"><%= card %></li>
+      <%= for {card, i} <- Timesup.Game.get_player_cards(@game, @current_user) |> Enum.with_index() do %>
+        <li>
+          <div class="card"><%= card %></div>
+          <div class="delete">
+            <button phx-click="delete_card" phx-value-index="<%= i %>">
+              Supprimer
+            </button>
+          </div>
+        </li>
       <% end %>
     </ul>
   </div>
     <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
       <div>
         <%= label f, :name, "Nouvelle carte" %>
-        <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra...", required: true%>
+        <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
       </div>
       <%= submit "Ajouter" %>
     </form>

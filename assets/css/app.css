@@ -192,6 +192,19 @@ ul.card-list {
   text-align: center;
   font-weight: bold;
 }
+.card-list .delete {
+  width: 100%;
+  text-align: center;
+  line-height: var(--line-height-small);
+}
+.card-list .delete > button {
+  padding: 0;
+  background: transparent;
+  color: black;
+  border: 0;
+  font-size: var(--s-1);
+  text-decoration: underline;
+}
 
 .choose-teams {
   max-width: var(--measure);

@@ -83,6 +83,10 @@ defmodule Timesup.GameServer do
     GenServer.call(via_tuple(game_id), {:skip_player, player})
   end
 
+  def delete_card(game_id, player, index) do
+    GenServer.call(via_tuple(game_id), {:delete_card, player, index})
+  end
+
   defp via_tuple(game_id) do
     {:via, Registry, {Timesup.GameRegistry, game_id}}
   end
@@ -176,6 +180,13 @@ defmodule Timesup.GameServer do
   def handle_call({:skip_player, player}, _from, game) do
     game
     |> Game.skip_player(player)
+    |> reply()
+  end
+
+  @impl true
+  def handle_call({:delete_card, player, index}, _from, game) do
+    game
+    |> Game.delete_card(player, index)
     |> reply()
   end
 

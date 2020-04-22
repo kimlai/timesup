@@ -128,6 +128,19 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign(socket, game: game)}
   end
 
+  def handle_event("delete_card", %{"index" => index}, %{assigns: assigns} = socket) do
+    game =
+      Timesup.GameServer.delete_card(
+        assigns.game.id,
+        assigns.current_user,
+        String.to_integer(index)
+      )
+
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+
+    {:noreply, assign(socket, game: game)}
+  end
+
   def handle_info(%{event: "update", payload: %{game: game}}, socket) do
     {:noreply, assign(socket, game: game)}
   end
