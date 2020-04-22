@@ -37,7 +37,9 @@ h2 {
   line-height: var(--line-height-small);
 }
 
+.btn,
 button {
+  text-decoration: none;
   background: black;
   color: white;
   padding: var(--s-2) var(--s1);
@@ -371,7 +373,9 @@ ul.player-list {
 
 .game-over h1 {
   padding-top: var(--s6);
-  padding-bottom: var(--s4);
+}
+.game-over > * + * {
+  margin-top: var(--s4);
 }
 
 .not-found > * + * {
