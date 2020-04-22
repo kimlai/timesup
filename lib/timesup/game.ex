@@ -224,6 +224,14 @@ defmodule Timesup.Game do
 
   def game_over?(game), do: game.round == nil
 
+  def skip_player(%Game{player_stack: [[head | tail] | other_teams]} = game, player)
+      # in case multiple players click the skip button at the same time
+      when head == player do
+    %{game | player_stack: [tail ++ [head] | other_teams]}
+  end
+
+  def skip_player(%Game{} = game), do: game
+
   defp next_round(:round_1), do: :round_2
   defp next_round(:round_2), do: :round_3
   defp next_round(:round_3), do: nil

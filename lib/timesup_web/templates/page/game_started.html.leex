@@ -7,7 +7,7 @@
            <li class="player">
              <%= player.name %>
              <%= if player.name == @current_user do %> (vous)<% end %>
-             <%= if !Enum.member?(@connect_users, player.name) do %>(déconnecté)<% end %>
+             <%= if !Enum.member?(@connect_users, player.name) do %><small>(déconnecté)</small><% end %>
            </li>
          <% end %>
        </ul>
@@ -59,10 +59,21 @@
       </div>
 
       <%= if !Timesup.Game.game_over?(@game) do %>
-        <p>
-          C'est à <b><%= Timesup.Game.current_player(@game) %></b> de faire deviner les
-          <%= length(@game.deck) %> cartes restantes.
-        </p>
+        <%= if @game.playing || Enum.member?(@connect_users, Timesup.Game.current_player(@game)) do %>
+          <p>
+            C'est à <b><%= Timesup.Game.current_player(@game) %></b> de faire deviner les
+            <%= length(@game.deck) %> cartes restantes.
+          </p>
+        <% else %>
+          <p>
+            C'est au tour de <b><%= Timesup.Game.current_player(@game) %></b>, mais il semblerait
+            qu'il·elle ait quitté la partie (ou perdu sa connexion). Vous pouvez attendre qu'il·elle
+            se reconnecte, ou bien passer son tour.
+          </p>
+          <button phx-click="skip_player" phx-value-player="<%= Timesup.Game.current_player(@game) %>">
+            Passer son tour
+          </button>
+        <% end %>
         <%= if @game.playing do %>
           <span id="time-remaining" phx-hook="RemainingTime" class="time-remaining">
             <%= @game.time_remaining %>

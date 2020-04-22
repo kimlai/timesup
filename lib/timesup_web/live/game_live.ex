@@ -121,6 +121,13 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign(socket, blink: "")}
   end
 
+  def handle_event("skip_player", %{"player" => player}, %{assigns: assigns} = socket) do
+    game = Timesup.GameServer.skip_player(assigns.game.id, player)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+
+    {:noreply, assign(socket, game: game)}
+  end
+
   def handle_info(%{event: "update", payload: %{game: game}}, socket) do
     {:noreply, assign(socket, game: game)}
   end

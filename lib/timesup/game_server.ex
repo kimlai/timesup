@@ -79,6 +79,10 @@ defmodule Timesup.GameServer do
     GenServer.call(via_tuple(game_id), :start_round)
   end
 
+  def skip_player(game_id, player) do
+    GenServer.call(via_tuple(game_id), {:skip_player, player})
+  end
+
   defp via_tuple(game_id) do
     {:via, Registry, {Timesup.GameRegistry, game_id}}
   end
@@ -165,6 +169,13 @@ defmodule Timesup.GameServer do
   def handle_call(:start_round, _from, game) do
     game
     |> Game.start_round()
+    |> reply()
+  end
+
+  @impl true
+  def handle_call({:skip_player, player}, _from, game) do
+    game
+    |> Game.skip_player(player)
     |> reply()
   end
 
