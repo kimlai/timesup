@@ -1,7 +1,7 @@
 defmodule TimesupWeb.PageController do
   use TimesupWeb, :controller
   alias Timesup.Repo
-  alias Timesup.GameState
+  alias Timesup.Game
   alias Timesup.GameServer
   alias Timesup.StoredGame
   import Ecto.Changeset
@@ -13,7 +13,7 @@ defmodule TimesupWeb.PageController do
   def create_game(conn, _params) do
     game =
       random_id()
-      |> GameState.new()
+      |> Game.new()
       # we write the to database now because the game GenServer will try to
       # fetch the existing state from the DB as soon as it starts up
       |> write_to_database()
@@ -26,9 +26,9 @@ defmodule TimesupWeb.PageController do
     redirect(conn, to: "/game/#{game.id}/join")
   end
 
-  defp write_to_database(%GameState{} = game) do
+  defp write_to_database(%Game{} = game) do
     game
-    |> StoredGame.from_game_state()
+    |> StoredGame.from_game()
     |> Repo.insert!()
 
     game

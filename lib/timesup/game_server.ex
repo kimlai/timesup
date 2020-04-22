@@ -2,7 +2,7 @@ defmodule Timesup.GameServer do
   require Logger
   use GenServer
   alias Ecto.Multi
-  alias Timesup.GameState
+  alias Timesup.Game
   alias Timesup.Repo
   alias Timesup.StoredGame
 
@@ -10,7 +10,7 @@ defmodule Timesup.GameServer do
 
   def start_link(options) do
     [name: {:via, Registry, {Timesup.GameRegistry, game_id}}] = options
-    GenServer.start_link(__MODULE__, GameState.new(game_id), options)
+    GenServer.start_link(__MODULE__, Game.new(game_id), options)
   end
 
   @impl true
@@ -25,7 +25,7 @@ defmodule Timesup.GameServer do
       |> Repo.get(game.id)
       |> case do
         %StoredGame{} = stored_game ->
-          StoredGame.to_game_state(stored_game)
+          StoredGame.to_game(stored_game)
 
         # Nothing in the database -> we'll show the 404 page
         nil ->
@@ -93,7 +93,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:join, username}, _from, game) do
     game
-    |> GameState.add_player(username)
+    |> Game.add_player(username)
     |> write_to_database()
     |> reply()
   end
@@ -101,7 +101,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:add_card, card, player}, _from, game) do
     game
-    |> GameState.add_card(card, player)
+    |> Game.add_card(card, player)
     |> write_to_database()
     |> reply()
   end
@@ -109,7 +109,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:set_player_ready, player}, _from, game) do
     game
-    |> GameState.set_player_ready(player)
+    |> Game.set_player_ready(player)
     |> write_to_database()
     |> reply()
   end
@@ -117,7 +117,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:start_choosing_teams}, _from, game) do
     game
-    |> GameState.start_choosing_teams()
+    |> Game.start_choosing_teams()
     |> write_to_database()
     |> reply()
   end
@@ -125,7 +125,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:choose_team, player, team}, _from, game) do
     game
-    |> GameState.choose_team(player, team)
+    |> Game.choose_team(player, team)
     |> write_to_database()
     |> reply()
   end
@@ -133,7 +133,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:start_game}, _from, game) do
     game
-    |> GameState.start_game()
+    |> Game.start_game()
     |> write_to_database()
     |> reply()
   end
@@ -141,14 +141,14 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:start_turn}, _from, game) do
     Process.send_after(self(), :tick, 1000)
-    game = GameState.start_turn(game)
+    game = Game.start_turn(game)
     {:reply, game, game}
   end
 
   @impl true
   def handle_call({:card_guessed}, _from, game) do
     game
-    |> GameState.card_guessed()
+    |> Game.card_guessed()
     |> write_to_database()
     |> reply()
   end
@@ -156,7 +156,7 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:pass_card}, _from, game) do
     game
-    |> GameState.pass_card()
+    |> Game.pass_card()
     |> write_to_database()
     |> reply()
   end
@@ -164,13 +164,13 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call(:start_round, _from, game) do
     game
-    |> GameState.start_round()
+    |> Game.start_round()
     |> reply()
   end
 
   @impl true
   def handle_info(:tick, game) do
-    game = GameState.tick(game)
+    game = Game.tick(game)
 
     if game.playing do
       Process.send_after(self(), :tick, 1000)
@@ -181,11 +181,11 @@ defmodule Timesup.GameServer do
     {:noreply, game}
   end
 
-  def write_to_database(%GameState{} = game) do
+  def write_to_database(%Game{} = game) do
     Task.start(fn ->
       Multi.new()
-      |> Multi.delete(:delete, StoredGame.from_game_state(game))
-      |> Multi.insert(:insert, StoredGame.from_game_state(game))
+      |> Multi.delete(:delete, StoredGame.from_game(game))
+      |> Multi.insert(:insert, StoredGame.from_game(game))
       |> Timesup.Repo.transaction()
       |> case do
         {:error, failed_operation, failed_value, _} ->
@@ -202,7 +202,7 @@ defmodule Timesup.GameServer do
     game
   end
 
-  defp reply(%GameState{} = game) do
+  defp reply(%Game{} = game) do
     {:reply, game, game}
   end
 end

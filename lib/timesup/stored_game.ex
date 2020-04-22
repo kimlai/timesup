@@ -1,16 +1,16 @@
 defmodule Timesup.StoredGame do
   @moduledoc """
-  Serves as a translation layer between the Game State and the database.
+  Serves as a translation layer between in memory Game state and the database.
 
   Since so much of the game state is internal to the application, I don't
   want to bother with schemas, embedded schemas and all that. It would
-  clutter the GameState code, which is where all the important logic is.
+  clutter the Game code, which is where all the important logic is.
   It makes for a very ugly module, which could be *cleaner* with Ecto types,
   but not really *better*.
   """
   use Ecto.Schema
   alias Timesup.StoredGame
-  alias Timesup.GameState
+  alias Timesup.Game
 
   @primary_key {:id, :string, []}
   schema "games" do
@@ -23,7 +23,7 @@ defmodule Timesup.StoredGame do
     timestamps()
   end
 
-  def from_game_state(%GameState{} = game) do
+  def from_game(%Game{} = game) do
     %StoredGame{
       id: game.id,
       deck: game.deck,
@@ -34,8 +34,8 @@ defmodule Timesup.StoredGame do
     }
   end
 
-  def to_game_state(%StoredGame{} = game) do
-    %GameState{
+  def to_game(%StoredGame{} = game) do
+    %Game{
       id: game.id,
       deck: game.deck,
       players: Enum.map(game.players, &parse_player/1) |> Map.new(),

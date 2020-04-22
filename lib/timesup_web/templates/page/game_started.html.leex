@@ -3,7 +3,7 @@
      <b>Équipe 1</b>
      <div>
        <ul class="player-list">
-         <%= for player <- Timesup.GameState.team_1(@game) do %>
+         <%= for player <- Timesup.Game.team_1(@game) do %>
            <li class="player">
              <%= player.name %>
              <%= if player.name == @current_user do %> (vous)<% end %>
@@ -12,14 +12,14 @@
        </ul>
      </div>
      <ul>
-       <li>Manche 1: <%= Timesup.GameState.team_1_points(@game).round_1 %> points</li>
-       <li>Manche 2: <%= Timesup.GameState.team_1_points(@game).round_2 %> points</li>
-       <li>Manche 3: <%= Timesup.GameState.team_1_points(@game).round_3 %> points</li>
+       <li>Manche 1: <%= Timesup.Game.team_1_points(@game).round_1 %> points</li>
+       <li>Manche 2: <%= Timesup.Game.team_1_points(@game).round_2 %> points</li>
+       <li>Manche 3: <%= Timesup.Game.team_1_points(@game).round_3 %> points</li>
      </ul>
      <b>Équipe 2</b>
      <div>
        <ul class="player-list">
-         <%= for player <- Timesup.GameState.team_2(@game) do %>
+         <%= for player <- Timesup.Game.team_2(@game) do %>
            <li class="player">
              <%= player.name %>
              <%= if player.name == @current_user do %> (vous)<% end %>
@@ -28,9 +28,9 @@
        </ul>
      </div>
      <ul>
-       <li>Manche 1: <%= Timesup.GameState.team_2_points(@game).round_1 %> points</li>
-       <li>Manche 2: <%= Timesup.GameState.team_2_points(@game).round_2 %> points</li>
-       <li>Manche 3: <%= Timesup.GameState.team_2_points(@game).round_3 %> points</li>
+       <li>Manche 1: <%= Timesup.Game.team_2_points(@game).round_1 %> points</li>
+       <li>Manche 2: <%= Timesup.Game.team_2_points(@game).round_2 %> points</li>
+       <li>Manche 3: <%= Timesup.Game.team_2_points(@game).round_3 %> points</li>
      </ul>
   </aside>
   <section class="content">
@@ -56,16 +56,16 @@
         <% end %>
       </div>
 
-      <%= if !Timesup.GameState.game_over?(@game) do %>
+      <%= if !Timesup.Game.game_over?(@game) do %>
         <p>
-          C'est à <b><%= Timesup.GameState.current_player(@game) %></b> de faire deviner les
+          C'est à <b><%= Timesup.Game.current_player(@game) %></b> de faire deviner les
           <%= length(@game.deck) %> cartes restantes.
         </p>
         <%= if @game.playing do %>
           <span id="time-remaining" phx-hook="RemainingTime" class="time-remaining">
             <%= @game.time_remaining %>
           </span>
-          <%= if Timesup.GameState.current_player(@game) != @current_user do %>
+          <%= if Timesup.Game.current_player(@game) != @current_user do %>
             <span
               class="current-card <%= if @game.last_card_guessed == nil do %>invisible<% end %>"
             >
@@ -74,7 +74,7 @@
               <%= if @game.last_card_guessed == nil do %>placeholder<% end %>
             </span>
           <% else %>
-            <span class="current-card"><%= Timesup.GameState.current_card(@game) %></span>
+            <span class="current-card"><%= Timesup.Game.current_card(@game) %></span>
             <div class="actions">
               <%= if @game.round != :round_1 do %>
                 <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
@@ -87,7 +87,7 @@
             </div>
           <% end %>
         <% else %>
-          <%= if Timesup.GameState.current_player(@game) == @current_user do %>
+          <%= if Timesup.Game.current_player(@game) == @current_user do %>
             <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
               <%= submit "C'est parti !" %>
             </form>

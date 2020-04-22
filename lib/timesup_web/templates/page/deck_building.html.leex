@@ -13,7 +13,7 @@
   <h2>Joueurs connectés</h2>
   <div>
   <ul class="player-list">
-    <%= for player <- Timesup.GameState.get_players(@game) do %>
+    <%= for player <- Timesup.Game.get_players(@game) do %>
       <li class="player">
         <%= player.name %>
         <%= if player.ready do %> (prêt·e)<% end %>
@@ -23,13 +23,13 @@
   </ul>
   </div>
 
-  <%= if Timesup.GameState.all_players_ready?(@game) do %>
+  <%= if Timesup.Game.all_players_ready?(@game) do %>
     <div>Tout le monde est prêt</div>
     <%= f = form_for :choose_teams, "#", [phx_submit: :start_choosing_teams] %>
       <%= submit "Choisir les équipes" %>
     </form>
   <% else %>
-    <%= if Timesup.GameState.player_ready?(@game, @current_user) do %>
+    <%= if Timesup.Game.player_ready?(@game, @current_user) do %>
       <div>En attente des autres joueurs</div>
     <% end %>
   <% end %>
@@ -40,15 +40,15 @@
       décidez entre vous du nombre de cartes à écrire (il est préférable que tout le monde écrive le
       même nombre de cartes).
     </p>
-    <div>Nombre total de cartes : <%= Timesup.GameState.number_of_cards(@game) %></div>
-    <%= if length(Timesup.GameState.get_player_cards(@game, @current_user)) > 0 && !Timesup.GameState.player_ready?(@game, @current_user) do %>
+    <div>Nombre total de cartes : <%= Timesup.Game.number_of_cards(@game) %></div>
+    <%= if length(Timesup.Game.get_player_cards(@game, @current_user)) > 0 && !Timesup.Game.player_ready?(@game, @current_user) do %>
       <%= f = form_for :ready, "#", [phx_submit: :set_player_ready] %>
         <%= submit "Je suis prêt·e" %>
       </form>
     <% end %>
   <div>
     <ul class="card-list">
-      <%= for card <- Timesup.GameState.get_player_cards(@game, @current_user) do %>
+      <%= for card <- Timesup.Game.get_player_cards(@game, @current_user) do %>
         <li class="card"><%= card %></li>
       <% end %>
     </ul>

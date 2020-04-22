@@ -2,7 +2,7 @@
   <h1>Répartition des équipes</h1>
   <div>
     <ul class="player-list">
-      <%= for player <- Timesup.GameState.players_with_no_team(@game) do %>
+      <%= for player <- Timesup.Game.players_with_no_team(@game) do %>
         <li class="player">
           <%= player.name %>
           <%= if player.name == @current_user do %> (vous)<% end %>
@@ -17,10 +17,10 @@
         <%= submit "Rejoindre", class: "secondary" %>
       </form>
     </div>
-    <%= if Timesup.GameState.team_1(@game) != [] do %>
+    <%= if Timesup.Game.team_1(@game) != [] do %>
       <div>
         <ul class="player-list">
-          <%= for player <- Timesup.GameState.team_1(@game) do %>
+          <%= for player <- Timesup.Game.team_1(@game) do %>
             <li class="player">
               <%= player.name %>
               <%= if player.name == @current_user do %> (vous)<% end %>
@@ -37,10 +37,10 @@
         <%= submit "Rejoindre", class: "secondary" %>
       </form>
     </div>
-    <%= if Timesup.GameState.team_2(@game) != [] do %>
+    <%= if Timesup.Game.team_2(@game) != [] do %>
       <div>
         <ul class="player-list">
-          <%= for player <- Timesup.GameState.team_2(@game) do %>
+          <%= for player <- Timesup.Game.team_2(@game) do %>
             <li class="player">
               <%= player.name %>
               <%= if player.name == @current_user do %> (vous)<% end %>
@@ -51,7 +51,7 @@
     <% end %>
   </div>
 
-  <%= if Timesup.GameState.players_with_no_team(@game) == [] do %>
+  <%= if Timesup.Game.players_with_no_team(@game) == [] do %>
     <%= f = form_for :start_game, "#", [phx_submit: :start_game, class: "start-game-form"] %>
       <%= submit "C'est parti !" %>
     </form>

@@ -1,4 +1,4 @@
-defmodule Timesup.GameState do
+defmodule Timesup.Game do
   alias __MODULE__
 
   @seconds_per_turn 30
@@ -18,10 +18,10 @@ defmodule Timesup.GameState do
   )
 
   def new(id) do
-    %GameState{id: id}
+    %Game{id: id}
   end
 
-  def add_player(%GameState{} = game, player) do
+  def add_player(%Game{} = game, player) do
     %{
       game
       | players:
@@ -39,46 +39,46 @@ defmodule Timesup.GameState do
     }
   end
 
-  def get_players(%GameState{players: players}) do
+  def get_players(%Game{players: players}) do
     Map.values(players)
   end
 
-  def add_card(%GameState{} = game, card, player) do
+  def add_card(%Game{} = game, card, player) do
     %{
       game
       | players: Map.update!(game.players, player, fn p -> %{p | cards: p.cards ++ [card]} end)
     }
   end
 
-  def get_player_cards(%GameState{players: players}, player) do
+  def get_player_cards(%Game{players: players}, player) do
     players
     |> Map.get(player)
     |> Map.get(:cards)
   end
 
-  def number_of_cards(%GameState{players: players}) do
+  def number_of_cards(%Game{players: players}) do
     players
     |> Enum.flat_map(fn {_, p} -> p.cards end)
     |> length()
   end
 
-  def set_player_ready(%GameState{players: players} = game, player) do
+  def set_player_ready(%Game{players: players} = game, player) do
     %{game | players: Map.update!(players, player, fn p -> %{p | ready: true} end)}
   end
 
-  def player_ready?(%GameState{players: players}, player) do
+  def player_ready?(%Game{players: players}, player) do
     Map.get(players, player).ready
   end
 
-  def all_players_ready?(%GameState{players: players}) do
+  def all_players_ready?(%Game{players: players}) do
     Enum.all?(players, fn {_, p} -> p.ready == true end)
   end
 
-  def start_choosing_teams(%GameState{} = game) do
+  def start_choosing_teams(%Game{} = game) do
     %{game | status: :choosing_teams}
   end
 
-  def choose_team(%GameState{teams: teams} = game, player, team_index)
+  def choose_team(%Game{teams: teams} = game, player, team_index)
       when is_integer(team_index) and 0 <= team_index and team_index < length(teams) do
     %{
       game
@@ -93,29 +93,29 @@ defmodule Timesup.GameState do
     Enum.map(teams, fn team -> Enum.reject(team, fn p -> p == player end) end)
   end
 
-  def team_1(%GameState{} = game) do
+  def team_1(%Game{} = game) do
     team(game, 0)
   end
 
-  def team_2(%GameState{} = game) do
+  def team_2(%Game{} = game) do
     team(game, 1)
   end
 
-  defp team(%GameState{players: players} = game, team_index) do
+  defp team(%Game{players: players} = game, team_index) do
     game.teams
     |> Enum.at(team_index)
     |> Enum.map(fn p -> Map.get(game.players, p) end)
   end
 
-  def team_1_points(%GameState{} = game) do
+  def team_1_points(%Game{} = game) do
     team_points(game, 0)
   end
 
-  def team_2_points(%GameState{} = game) do
+  def team_2_points(%Game{} = game) do
     team_points(game, 1)
   end
 
-  defp team_points(%GameState{} = game, team_index) do
+  defp team_points(%Game{} = game, team_index) do
     game
     |> team(team_index)
     |> Enum.map(fn p -> p.points end)
@@ -128,7 +128,7 @@ defmodule Timesup.GameState do
     end)
   end
 
-  def players_with_no_team(%GameState{players: players} = game) do
+  def players_with_no_team(%Game{players: players} = game) do
     players_with_team = List.flatten(game.teams)
 
     players
@@ -136,7 +136,7 @@ defmodule Timesup.GameState do
     |> Enum.reject(fn p -> Enum.member?(players_with_team, p.name) end)
   end
 
-  def start_game(%GameState{} = game) do
+  def start_game(%Game{} = game) do
     %{
       game
       | status: :game_started,
@@ -145,24 +145,24 @@ defmodule Timesup.GameState do
     }
   end
 
-  def shuffle_deck(%GameState{players: players} = game) do
+  def shuffle_deck(%Game{players: players} = game) do
     players
     |> Enum.flat_map(fn {_, p} -> p.cards end)
     |> Enum.shuffle()
   end
 
-  def current_player(%GameState{player_stack: [[head | _] | _]}), do: head
+  def current_player(%Game{player_stack: [[head | _] | _]}), do: head
 
-  def current_card(%GameState{deck: []}), do: nil
-  def current_card(%GameState{deck: [head | _]}), do: head
+  def current_card(%Game{deck: []}), do: nil
+  def current_card(%Game{deck: [head | _]}), do: head
 
-  def start_turn(%GameState{} = game) do
+  def start_turn(%Game{} = game) do
     %{game | playing: true, last_card_guessed: nil}
   end
 
-  def tick(%GameState{playing: false} = game), do: game
+  def tick(%Game{playing: false} = game), do: game
 
-  def tick(%GameState{} = game) do
+  def tick(%Game{} = game) do
     time_remaining = game.time_remaining - 1
 
     if time_remaining < 0 do
@@ -172,7 +172,7 @@ defmodule Timesup.GameState do
     end
   end
 
-  defp end_turn(%GameState{} = game) do
+  defp end_turn(%Game{} = game) do
     [[last_player | other_players] | other_teams] = game.player_stack
     [last_card | other_cards] = game.deck
 
@@ -185,14 +185,14 @@ defmodule Timesup.GameState do
     }
   end
 
-  def card_guessed(%GameState{deck: [card | []]} = game) do
+  def card_guessed(%Game{deck: [card | []]} = game) do
     game
     |> add_point(card)
     |> end_turn()
     |> end_round()
   end
 
-  def card_guessed(%GameState{deck: [card | tail]} = game) do
+  def card_guessed(%Game{deck: [card | tail]} = game) do
     %{game | deck: tail}
     |> add_point(card)
   end
@@ -208,7 +208,7 @@ defmodule Timesup.GameState do
     }
   end
 
-  def pass_card(%GameState{deck: [head | tail]} = game) do
+  def pass_card(%Game{deck: [head | tail]} = game) do
     %{game | deck: tail ++ [head]}
   end
 
@@ -228,12 +228,12 @@ defmodule Timesup.GameState do
   defp next_round(:round_2), do: :round_3
   defp next_round(:round_3), do: nil
 
-  def start_round(%GameState{} = game) do
+  def start_round(%Game{} = game) do
     %{game | show_round_intro: false}
   end
 
   def fixture(id) do
-    %GameState{
+    %Game{
       id: id,
       status: :deck_building,
       players: %{
