@@ -6,5 +6,5 @@
       <%= error_tag f, :name %>
     </div>
     <%= submit "Valider" %>
-  <%= end %>
+  <% end %>
 </div>

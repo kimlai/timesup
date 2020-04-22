@@ -4,8 +4,8 @@
       <h1>404</h1>
       <p>Impossible de retrouver cette partie. Vous pouvez en créer une nouvelle ⬇</p>
     </div>
-    <%= form_for :new_game, Routes.page_path(TimesupWeb.Endpoint, :create_game), [class: "new-game-form"], fn f -> %>
+    <%= form_for :new_game, Routes.page_path(TimesupWeb.Endpoint, :create_game), [class: "new-game-form"], fn _f -> %>
       <%= submit "Nouvelle partie"%>
-    <%= end %>
+    <% end %>
   </div>
 </div>

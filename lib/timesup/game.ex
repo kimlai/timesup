@@ -104,7 +104,7 @@ defmodule Timesup.Game do
   defp team(%Game{players: players} = game, team_index) do
     game.teams
     |> Enum.at(team_index)
-    |> Enum.map(fn p -> Map.get(game.players, p) end)
+    |> Enum.map(fn p -> Map.get(players, p) end)
   end
 
   def team_1_points(%Game{} = game) do
@@ -145,7 +145,7 @@ defmodule Timesup.Game do
     }
   end
 
-  def shuffle_deck(%Game{players: players} = game) do
+  def shuffle_deck(%Game{players: players}) do
     players
     |> Enum.flat_map(fn {_, p} -> p.cards end)
     |> Enum.shuffle()

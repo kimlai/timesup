@@ -7,9 +7,9 @@
       <p>Pour pouvoir y jouer même quand on est confiné.</p>
     </div>
     <div class="links">
-      <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
+      <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn _f -> %>
         <%= submit "Nouvelle partie"%>
-      <%= end %>
+      <% end %>
       <div class="how-does-it-work">
         <a href="#how-does-it-work">Comment ça marche ?</a>
       </div>
@@ -27,8 +27,8 @@
       <li>Ensuite c'est comme d'habitude, chaque joueur écrit des noms sur des cartes (virtuelles), on fait des équipes, et on joue !</li>
     </ol>
   </p>
-  <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn f -> %>
+  <%= form_for @conn, Routes.page_path(@conn, :create_game), [class: "new-game-form"], fn _f -> %>
     <%= submit "Nouvelle partie"%>
-  <%= end %>
+  <% end %>
   </p>
 </section>

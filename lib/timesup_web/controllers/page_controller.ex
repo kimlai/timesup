@@ -20,7 +20,7 @@ defmodule TimesupWeb.PageController do
 
     DynamicSupervisor.start_child(
       Timesup.GameSupervisor,
-      {Timesup.GameServer, name: {:via, Registry, {Timesup.GameRegistry, game.id}}}
+      {GameServer, name: {:via, Registry, {Timesup.GameRegistry, game.id}}}
     )
 
     redirect(conn, to: "/game/#{game.id}/join")
@@ -44,7 +44,7 @@ defmodule TimesupWeb.PageController do
     |> apply_action(:validate)
     |> case do
       {:ok, player} ->
-        game = Timesup.GameServer.join(game_id, player.name)
+        game = GameServer.join(game_id, player.name)
         TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 
         conn
