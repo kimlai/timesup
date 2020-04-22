@@ -6,7 +6,7 @@
          <%= for player <- Timesup.Game.team_1(@game) do %>
            <li class="player">
              <%= player.name %>
-             <%= if player.name == @current_user do %> (vous)<% end %>
+             <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
              <%= if !Enum.member?(@connect_users, player.name) do %><small>(déconnecté)</small><% end %>
            </li>
          <% end %>
@@ -23,7 +23,7 @@
          <%= for player <- Timesup.Game.team_2(@game) do %>
            <li class="player <%= if !Enum.member?(@connect_users, player.name) do %>disconnected<% end %>">
              <%= player.name %>
-             <%= if player.name == @current_user do %> (vous)<% end %>
+             <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
              <%= if !Enum.member?(@connect_users, player.name) do %><small>(déconnecté)</small><% end %>
            </li>
          <% end %>

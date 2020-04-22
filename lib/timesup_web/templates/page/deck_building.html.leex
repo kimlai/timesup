@@ -17,7 +17,7 @@
       <li class="player">
         <%= player.name %>
         <%= if player.ready do %> (prêt·e)<% end %>
-        <%= if player.name == @current_user do %> (vous)<% end %>
+        <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
       </li>
     <% end %>
   </ul>
