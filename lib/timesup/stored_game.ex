@@ -42,7 +42,7 @@ defmodule Timesup.StoredGame do
       status: parse_status(game.status),
       round: parse_round(game.round),
       teams: game.teams |> Map.values(),
-      player_stack: game.teams |> Map.values()
+      player_stack: game.teams |> Map.values() |> Enum.reject(fn t -> t == [] end)
     }
   end
 

@@ -141,7 +141,7 @@ defmodule Timesup.Game do
       game
       | status: :game_started,
         deck: shuffle_deck(game),
-        player_stack: game.teams
+        player_stack: Enum.reject(game.teams, fn t -> t == [] end)
     }
   end
 
