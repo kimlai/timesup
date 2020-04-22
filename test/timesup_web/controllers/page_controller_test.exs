@@ -3,6 +3,6 @@ defmodule TimesupWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")
-    assert html_response(conn, 200) =~ "Time's up"
+    assert html_response(conn, 200) =~ "Time's Up"
   end
 end
