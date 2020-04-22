@@ -2,6 +2,7 @@ defmodule TimesupWeb.PageController do
   use TimesupWeb, :controller
   alias Timesup.Repo
   alias Timesup.GameState
+  alias Timesup.GameServer
   alias Timesup.StoredGame
   import Ecto.Changeset
 
@@ -19,7 +20,7 @@ defmodule TimesupWeb.PageController do
 
     DynamicSupervisor.start_child(
       Timesup.GameSupervisor,
-      {Timesup.Game, name: {:via, Registry, {Timesup.GameRegistry, game.id}}}
+      {Timesup.GameServer, name: {:via, Registry, {Timesup.GameRegistry, game.id}}}
     )
 
     redirect(conn, to: "/game/#{game.id}/join")
@@ -43,7 +44,7 @@ defmodule TimesupWeb.PageController do
     |> apply_action(:validate)
     |> case do
       {:ok, player} ->
-        game = Timesup.Game.join(game_id, player.name)
+        game = Timesup.GameServer.join(game_id, player.name)
         TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 
         conn

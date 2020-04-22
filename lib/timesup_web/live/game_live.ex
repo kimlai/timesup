@@ -1,21 +1,22 @@
 defmodule TimesupWeb.GameLive do
   use Phoenix.LiveView, layout: {TimesupWeb.LayoutView, "live.html"}
+  alias Timesup.GameServer
 
   def mount(%{"id" => game_id}, %{"current_user" => user}, socket) do
     if connected?(socket), do: TimesupWeb.Endpoint.subscribe(game_id)
 
     game =
       try do
-        Timesup.Game.get_game(game_id)
+        Timesup.GameServer.get_game(game_id)
       catch
         # most likely a new deployment destroyed the process
         :exit, _ ->
           DynamicSupervisor.start_child(
             Timesup.GameSupervisor,
-            {Timesup.Game, name: {:via, Registry, {Timesup.GameRegistry, game_id}}}
+            {GameServer, name: {:via, Registry, {Timesup.GameRegistry, game_id}}}
           )
 
-          Timesup.Game.get_game(game_id)
+          Timesup.GameServer.get_game(game_id)
       end
 
     socket =
@@ -49,19 +50,19 @@ defmodule TimesupWeb.GameLive do
   end
 
   def handle_event("add_card", %{"card" => %{"name" => name}}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.add_card(assigns.game.id, name, assigns.current_user)
+    game = Timesup.GameServer.add_card(assigns.game.id, name, assigns.current_user)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("set_player_ready", %{}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.set_player_ready(assigns.game.id, assigns.current_user)
+    game = Timesup.GameServer.set_player_ready(assigns.game.id, assigns.current_user)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("start_choosing_teams", %{}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.start_choosing_teams(assigns.game.id)
+    game = Timesup.GameServer.start_choosing_teams(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
@@ -75,32 +76,32 @@ defmodule TimesupWeb.GameLive do
   end
 
   defp choose_team(team, %{assigns: assigns} = socket) do
-    game = Timesup.Game.choose_team(assigns.game.id, assigns.current_user, team)
+    game = Timesup.GameServer.choose_team(assigns.game.id, assigns.current_user, team)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("start_game", %{}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.start_game(assigns.game.id)
+    game = Timesup.GameServer.start_game(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("start_turn", %{}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.start_turn(assigns.game.id)
+    game = Timesup.GameServer.start_turn(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("card_guessed", %{}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.card_guessed(assigns.game.id)
+    game = Timesup.GameServer.card_guessed(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_guessed"})
     {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("pass_card", %{}, %{assigns: assigns} = socket) do
-    game = Timesup.Game.pass_card(assigns.game.id)
+    game = Timesup.GameServer.pass_card(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_passed"})
 
@@ -108,7 +109,7 @@ defmodule TimesupWeb.GameLive do
   end
 
   def handle_event("start_round", _, %{assigns: assigns} = socket) do
-    game = Timesup.Game.start_round(assigns.game.id)
+    game = Timesup.GameServer.start_round(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end

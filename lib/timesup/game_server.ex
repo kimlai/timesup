@@ -1,4 +1,4 @@
-defmodule Timesup.Game do
+defmodule Timesup.GameServer do
   require Logger
   use GenServer
   alias Ecto.Multi
