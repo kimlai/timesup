@@ -1,6 +1,5 @@
 defmodule Timesup.GameState do
   alias __MODULE__
-  alias Timesup.ListExtra
 
   @seconds_per_turn 30
 
