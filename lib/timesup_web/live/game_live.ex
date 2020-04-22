@@ -1,6 +1,7 @@
 defmodule TimesupWeb.GameLive do
   use Phoenix.LiveView, layout: {TimesupWeb.LayoutView, "live.html"}
   alias Timesup.GameServer
+  alias TimesupWeb.Presence
 
   def mount(%{"id" => game_id}, %{"current_user" => user}, socket) do
     if connected?(socket), do: TimesupWeb.Endpoint.subscribe(game_id)
@@ -19,11 +20,19 @@ defmodule TimesupWeb.GameLive do
           Timesup.GameServer.get_game(game_id)
       end
 
+    Presence.track(
+      self(),
+      game_id,
+      user,
+      %{name: user}
+    )
+
     socket =
       socket
       |> assign(current_user: user)
       |> assign(blink: "")
       |> assign(game: game)
+      |> assign(connect_users: fetch_connected_users(game_id))
 
     {:ok, socket}
   end
@@ -118,6 +127,17 @@ defmodule TimesupWeb.GameLive do
 
   def handle_info(%{event: "blink", payload: %{type: type}}, socket) do
     {:noreply, assign(socket, blink: type)}
+  end
+
+  def handle_info(%{event: "presence_diff"}, %{assigns: %{game: game}} = socket) do
+    {:noreply, assign(socket, connect_users: fetch_connected_users(game.id))}
+  end
+
+  defp fetch_connected_users(game_id) do
+    game_id
+    |> Presence.list()
+    |> Enum.map(fn {_, data} -> List.first(data[:metas]) end)
+    |> Enum.map(fn user -> user.name end)
   end
 
   defp choose_team(team, %{assigns: assigns} = socket) do
