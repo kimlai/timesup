@@ -1,0 +1,9 @@
+<ul class="player-list">
+  <%= for player <- @players do %>
+    <li class="player">
+      <%= player.name %>
+      <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
+      <%= if !Enum.member?(@connect_users, player.name) do %><small>(déconnecté)</small><% end %>
+    </li>
+  <% end %>
+</ul>

@@ -93,29 +93,13 @@ defmodule Timesup.Game do
     Enum.map(teams, fn team -> Enum.reject(team, fn p -> p == player end) end)
   end
 
-  def team_1(%Game{} = game) do
-    team(game, 0)
-  end
-
-  def team_2(%Game{} = game) do
-    team(game, 1)
-  end
-
-  defp team(%Game{players: players} = game, team_index) do
+  def team(%Game{players: players} = game, team_index) do
     game.teams
     |> Enum.at(team_index)
     |> Enum.map(fn p -> Map.get(players, p) end)
   end
 
-  def team_1_points(%Game{} = game) do
-    team_points(game, 0)
-  end
-
-  def team_2_points(%Game{} = game) do
-    team_points(game, 1)
-  end
-
-  defp team_points(%Game{} = game, team_index) do
+  def team_points(%Game{} = game, team_index) do
     game
     |> team(team_index)
     |> Enum.map(fn p -> p.points end)

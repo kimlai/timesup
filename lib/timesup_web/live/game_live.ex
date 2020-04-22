@@ -76,12 +76,16 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign(socket, game: game)}
   end
 
-  def handle_event("choose_team_1", _, socket) do
-    choose_team(0, socket)
-  end
+  def handle_event("choose_team", %{"team" => team}, %{assigns: assigns} = socket) do
+    game =
+      Timesup.GameServer.choose_team(
+        assigns.game.id,
+        assigns.current_user,
+        String.to_integer(team)
+      )
 
-  def handle_event("choose_team_2", _, socket) do
-    choose_team(1, socket)
+    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    {:noreply, assign(socket, game: game)}
   end
 
   def handle_event("start_game", _, %{assigns: assigns} = socket) do
@@ -158,11 +162,5 @@ defmodule TimesupWeb.GameLive do
     |> Presence.list()
     |> Enum.map(fn {_, data} -> List.first(data[:metas]) end)
     |> Enum.map(fn user -> user.name end)
-  end
-
-  defp choose_team(team, %{assigns: assigns} = socket) do
-    game = Timesup.GameServer.choose_team(assigns.game.id, assigns.current_user, team)
-    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
   end
 end

@@ -1,39 +1,20 @@
 <section class="game-started">
   <aside>
-     <b>Équipe 1</b>
-     <div>
-       <ul class="player-list">
-         <%= for player <- Timesup.Game.team_1(@game) do %>
-           <li class="player">
-             <%= player.name %>
-             <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
-             <%= if !Enum.member?(@connect_users, player.name) do %><small>(déconnecté)</small><% end %>
-           </li>
-         <% end %>
-       </ul>
-     </div>
-     <ul>
-       <li>Manche 1: <%= Timesup.Game.team_1_points(@game).round_1 %> points</li>
-       <li>Manche 2: <%= Timesup.Game.team_1_points(@game).round_2 %> points</li>
-       <li>Manche 3: <%= Timesup.Game.team_1_points(@game).round_3 %> points</li>
-     </ul>
-     <b>Équipe 2</b>
-     <div>
-       <ul class="player-list">
-         <%= for player <- Timesup.Game.team_2(@game) do %>
-           <li class="player <%= if !Enum.member?(@connect_users, player.name) do %>disconnected<% end %>">
-             <%= player.name %>
-             <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
-             <%= if !Enum.member?(@connect_users, player.name) do %><small>(déconnecté)</small><% end %>
-           </li>
-         <% end %>
-       </ul>
-     </div>
-     <ul>
-       <li>Manche 1: <%= Timesup.Game.team_2_points(@game).round_1 %> points</li>
-       <li>Manche 2: <%= Timesup.Game.team_2_points(@game).round_2 %> points</li>
-       <li>Manche 3: <%= Timesup.Game.team_2_points(@game).round_3 %> points</li>
-     </ul>
+    <%= for {_, team_index} <- Enum.with_index(@game.teams) do %>
+      <b>Équipe <%= team_index + 1 %></b>
+      <div>
+        <%= render(
+          TimesupWeb.PageView,
+          "player_list.html",
+          Map.put(assigns, :players, Timesup.Game.team(@game, team_index))
+        ) %>
+      </div>
+      <ul>
+        <%= for {round, i} <- Enum.with_index([:round_1, :round_2, :round_3]) do %>
+          <li>Manche <%= i + 1 %>: <%= Timesup.Game.team_points(@game, team_index)[round] %> points</li>
+        <% end %>
+      </ul>
+    <% end %>
   </aside>
   <section class="content">
     <div> <!-- used for horizontal centering -->

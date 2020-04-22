@@ -1,51 +1,31 @@
 <section class="choose-teams">
   <h1>Répartition des équipes</h1>
   <div>
-    <ul class="player-list">
-      <%= for player <- Timesup.Game.players_with_no_team(@game) do %>
-        <li class="player">
-          <%= player.name %>
-          <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
-        </li>
+    <%= render(
+      TimesupWeb.PageView,
+      "player_list.html",
+      Map.put(assigns, :players, Timesup.Game.players_with_no_team(@game))
+    ) %>
+  </div>
+  <%= for {_, team_index} <- Enum.with_index(@game.teams) do %>
+    <div class="team">
+      <div class="team-header">
+        <h2>Équipe <%= team_index + 1 %></h2>
+        <button phx-click="choose_team" phx-value-team="<%= team_index %>" class="secondary">
+          Rejoindre
+        </button>
+      </div>
+      <%= if Timesup.Game.team(@game, team_index) != [] do %>
+        <div>
+          <%= render(
+            TimesupWeb.PageView,
+            "player_list.html",
+            Map.put(assigns, :players, Timesup.Game.team(@game, team_index))
+          ) %>
+        </div>
       <% end %>
-    </ul>
-  </div>
-  <div class="team">
-    <div class="team-header">
-      <h2>Équipe 1</h2>
-      <button phx-click="choose_team_1" class="secondary">Rejoindre</button>
     </div>
-    <%= if Timesup.Game.team_1(@game) != [] do %>
-      <div>
-        <ul class="player-list">
-          <%= for player <- Timesup.Game.team_1(@game) do %>
-            <li class="player">
-              <%= player.name %>
-              <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-  </div>
-  <div class="team">
-    <div class="team-header">
-      <h2>Équipe 2</h2>
-      <button phx-click="choose_team_2" class="secondary">Rejoindre</button>
-    </div>
-    <%= if Timesup.Game.team_2(@game) != [] do %>
-      <div>
-        <ul class="player-list">
-          <%= for player <- Timesup.Game.team_2(@game) do %>
-            <li class="player">
-              <%= player.name %>
-              <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-  </div>
+  <% end %>
 
   <%= if Timesup.Game.players_with_no_team(@game) == [] do %>
     <div class="start-game-form">
