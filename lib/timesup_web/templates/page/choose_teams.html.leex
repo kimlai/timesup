@@ -13,9 +13,7 @@
   <div class="team">
     <div class="team-header">
       <h2>Équipe 1</h2>
-      <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_1] %>
-        <%= submit "Rejoindre", class: "secondary" %>
-      </form>
+      <button phx-click="choose_team_1" class="secondary">Rejoindre</button>
     </div>
     <%= if Timesup.Game.team_1(@game) != [] do %>
       <div>
@@ -33,9 +31,7 @@
   <div class="team">
     <div class="team-header">
       <h2>Équipe 2</h2>
-      <%= f = form_for :choose_teams, "#", [phx_submit: :choose_team_2] %>
-        <%= submit "Rejoindre", class: "secondary" %>
-      </form>
+      <button phx-click="choose_team_2" class="secondary">Rejoindre</button>
     </div>
     <%= if Timesup.Game.team_2(@game) != [] do %>
       <div>
@@ -52,8 +48,8 @@
   </div>
 
   <%= if Timesup.Game.players_with_no_team(@game) == [] do %>
-    <%= f = form_for :start_game, "#", [phx_submit: :start_game, class: "start-game-form"] %>
-      <%= submit "C'est parti !" %>
-    </form>
+    <div class="start-game-form">
+      <button phx-click="start_game">C'est parti !</button>
+    </div>
   <% end %>
 </section>

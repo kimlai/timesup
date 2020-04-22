@@ -77,20 +77,14 @@
             <span class="current-card"><%= Timesup.Game.current_card(@game) %></span>
             <div class="actions">
               <%= if @game.round != :round_1 do %>
-                <%= f = form_for :pass_card, "#", [phx_submit: :pass_card] %>
-                  <%= submit "Je passe", class: "secondary" %>
-                </form>
+                <button class="secondary" phx-click="pass_card">Je passe</button>
               <% end %>
-              <%= f = form_for :card_guessed, "#", [phx_submit: :card_guessed] %>
-                <%= submit "Deviné !" %>
-              </form>
+              <button phx-click="card_guessed">Deviné !</button>
             </div>
           <% end %>
         <% else %>
           <%= if Timesup.Game.current_player(@game) == @current_user do %>
-            <%= f = form_for :start_turn, "#", [phx_submit: :start_turn] %>
-              <%= submit "C'est parti !" %>
-            </form>
+            <button phx-click="start_turn">C'est parti !</button>
           <% end %>
         <% end %>
       <% end %>

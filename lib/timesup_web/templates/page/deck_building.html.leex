@@ -25,9 +25,7 @@
 
   <%= if Timesup.Game.all_players_ready?(@game) do %>
     <div>Tout le monde est prêt</div>
-    <%= f = form_for :choose_teams, "#", [phx_submit: :start_choosing_teams] %>
-      <%= submit "Choisir les équipes" %>
-    </form>
+    <button phx-click="start_choosing_teams">Choisir les équipes</button>
   <% else %>
     <%= if Timesup.Game.player_ready?(@game, @current_user) do %>
       <div>En attente des autres joueurs</div>
@@ -42,9 +40,7 @@
     </p>
     <div>Nombre total de cartes : <%= Timesup.Game.number_of_cards(@game) %></div>
     <%= if length(Timesup.Game.get_player_cards(@game, @current_user)) > 0 && !Timesup.Game.player_ready?(@game, @current_user) do %>
-      <%= f = form_for :ready, "#", [phx_submit: :set_player_ready] %>
-        <%= submit "Je suis prêt·e" %>
-      </form>
+      <button phx-click="set_player_ready">Je suis prêt·e</button>
     <% end %>
   <div>
     <ul class="card-list">
