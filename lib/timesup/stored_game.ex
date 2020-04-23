@@ -19,6 +19,11 @@ defmodule Timesup.StoredGame do
     field(:status, :string)
     field(:round, :string)
     field(:teams, :map)
+    field(:player_stack, :map)
+    field(:playing, :boolean)
+    field(:time_remaining, :integer)
+    field(:show_round_intro, :boolean)
+    field(:last_card_guessed, :string)
 
     timestamps()
   end
@@ -30,7 +35,12 @@ defmodule Timesup.StoredGame do
       players: game.players,
       status: Atom.to_string(game.status),
       round: Atom.to_string(game.round),
-      teams: game.teams |> Enum.with_index() |> Enum.map(fn {k, v} -> {v, k} end) |> Map.new()
+      teams: list_to_map(game.teams),
+      player_stack: list_to_map(game.player_stack),
+      playing: game.playing,
+      show_round_intro: game.show_round_intro,
+      time_remaining: game.time_remaining,
+      last_card_guessed: game.last_card_guessed
     }
   end
 
@@ -42,7 +52,11 @@ defmodule Timesup.StoredGame do
       status: parse_status(game.status),
       round: parse_round(game.round),
       teams: game.teams |> Map.values(),
-      player_stack: game.teams |> Map.values() |> Enum.reject(fn t -> t == [] end)
+      player_stack: game.player_stack |> Map.values() |> Enum.reject(fn t -> t == [] end),
+      playing: game.playing,
+      show_round_intro: game.show_round_intro,
+      time_remaining: game.time_remaining,
+      last_card_guessed: game.last_card_guessed
     }
   end
 
@@ -62,6 +76,15 @@ defmodule Timesup.StoredGame do
        points: %{round_1: round_1, round_2: round_2, round_3: round_3},
        ready: ready?
      }}
+  end
+
+  # PostgreSQL does not support multidimmensional arrays where the inner arrays have different lengths
+  # so we need to store them as jsonb
+  defp list_to_map(list) do
+    list
+    |> Enum.with_index()
+    |> Enum.map(fn {k, v} -> {v, k} end)
+    |> Map.new()
   end
 
   defp parse_status("deck_building"), do: :deck_building

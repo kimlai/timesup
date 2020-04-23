@@ -25,7 +25,14 @@ defmodule Timesup.GameServer do
       |> Repo.get(game.id)
       |> case do
         %StoredGame{} = stored_game ->
-          StoredGame.to_game(stored_game)
+          game = StoredGame.to_game(stored_game)
+
+          # restart the timer if necessary
+          if game.playing do
+            Process.send_after(self(), :tick, 1000)
+          end
+
+          game
 
         # Nothing in the database -> we'll show the 404 page
         nil ->
@@ -149,8 +156,11 @@ defmodule Timesup.GameServer do
   @impl true
   def handle_call({:start_turn}, _from, game) do
     Process.send_after(self(), :tick, 1000)
-    game = Game.start_turn(game)
-    {:reply, game, game}
+
+    game
+    |> Game.start_turn()
+    |> write_to_database()
+    |> reply()
   end
 
   @impl true
@@ -173,6 +183,7 @@ defmodule Timesup.GameServer do
   def handle_call(:start_round, _from, game) do
     game
     |> Game.start_round()
+    |> write_to_database()
     |> reply()
   end
 
@@ -180,6 +191,7 @@ defmodule Timesup.GameServer do
   def handle_call({:skip_player, player}, _from, game) do
     game
     |> Game.skip_player(player)
+    |> write_to_database()
     |> reply()
   end
 
@@ -187,6 +199,7 @@ defmodule Timesup.GameServer do
   def handle_call({:delete_card, player, index}, _from, game) do
     game
     |> Game.delete_card(player, index)
+    |> write_to_database()
     |> reply()
   end
 
@@ -199,6 +212,7 @@ defmodule Timesup.GameServer do
     end
 
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+    write_to_database(game)
 
     {:noreply, game}
   end
