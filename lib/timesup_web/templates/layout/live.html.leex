@@ -1,6 +1,12 @@
 <p><%= live_flash(@flash, :info) %></p>
 <p><%= live_flash(@flash, :notice) %></p>
 <p><%= live_flash(@flash, :error) %></p>
+<div class="disconnected-banner">
+  <div role="status" aria-live="polite">
+    <p>Il semblerait que le serveur ne réponde plus.</p>
+    <p>Tentative de reconnexion...</p>
+  </div>
+</div>
 <%= @inner_content %>
 <div
   id="blink"

@@ -392,3 +392,21 @@ ul.player-list {
 .not-found-header p {
   margin-top: var(--s0);
 }
+
+.disconnected-banner {
+  display: none;
+}
+.phx-error.phx-disconnected .disconnected-banner {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: var(--s0);
+  left: 0;
+  right: 0;
+}
+.disconnected-banner > * {
+  max-width: var(--measure);
+  background: black;
+  color: white;
+  padding: var(--s-2) var(--s1);
+}
