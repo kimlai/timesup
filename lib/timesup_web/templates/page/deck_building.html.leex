@@ -1,66 +1,77 @@
 <section class="deck-building">
-  <h1>Mise en place</h1>
-  <div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien :
-    <div class="share-box">
-      <input id="share-url" editable="false" value="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>"/>
-      <span>
-        <button class="copy-share-url" data-clipboard-target="#share-url">
-          Copier
-        </button>
-      </span>
+  <aside>
+    <h2>Joueurs connectés</h2>
+    <div>
+      <ul class="player-list">
+        <%= for player <- Timesup.Game.get_players(@game) do %>
+          <li class="player">
+            <%= player.name %>
+            <%= if player.ready do %> (prêt·e)<% end %>
+            <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
+          </li>
+        <% end %>
+      </ul>
     </div>
-  </div>
-  <h2>Joueurs connectés</h2>
-  <div>
-  <ul class="player-list">
-    <%= for player <- Timesup.Game.get_players(@game) do %>
-      <li class="player">
-        <%= player.name %>
-        <%= if player.ready do %> (prêt·e)<% end %>
-        <%= if player.name == @current_user do %> <small>(vous)</small><% end %>
-      </li>
-    <% end %>
-  </ul>
-  </div>
-
-  <%= if Timesup.Game.all_players_ready?(@game) do %>
-    <div>Tout le monde est prêt</div>
-    <button phx-click="start_choosing_teams">Choisir les équipes</button>
-  <% else %>
-    <%= if Timesup.Game.player_ready?(@game, @current_user) do %>
-      <div>En attente des autres joueurs</div>
-    <% end %>
-  <% end %>
-
-  <h2>Les cartes</h2>
-    <p>
-      Vous devez constituer une pile de cartes de noms de personnalités (plus ou moins) connues. Vous
-      décidez entre vous du nombre de cartes à écrire (il est préférable que tout le monde écrive le
-      même nombre de cartes).
-    </p>
-    <div>Nombre total de cartes : <%= Timesup.Game.number_of_cards(@game) %></div>
-    <%= if length(Timesup.Game.get_player_cards(@game, @current_user)) > 0 && !Timesup.Game.player_ready?(@game, @current_user) do %>
-      <button phx-click="set_player_ready">Je suis prêt·e</button>
-    <% end %>
-  <div>
-    <ul class="card-list">
-      <%= for {card, i} <- Timesup.Game.get_player_cards(@game, @current_user) |> Enum.with_index() do %>
-        <li>
-          <div class="card"><%= card %></div>
-          <div class="delete">
-            <button phx-click="delete_card" phx-value-index="<%= i %>">
-              Supprimer
+  </aside>
+  <section class="content">
+    <div> <!-- used for horizontal centering -->
+      <h1>Mise en place</h1>
+      <div>Pour inviter des personnes à rejoindre la partie, envoyez-leur ce lien :
+        <div class="share-box">
+          <input id="share-url" editable="false" value="<%= Routes.page_url(TimesupWeb.Endpoint, :choose_username, @game.id) %>"/>
+          <span>
+            <button class="copy-share-url" data-clipboard-target="#share-url">
+              Copier
             </button>
-          </div>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-    <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
-      <div>
-        <%= label f, :name, "Nouvelle carte" %>
-        <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
+          </span>
+        </div>
       </div>
-      <%= submit "Ajouter" %>
-    </form>
+
+      <h2>Les cartes</h2>
+      <p>
+        Vous devez constituer une pile de cartes de noms de personnalités (plus ou moins) connues. Vous
+        décidez entre vous du nombre de cartes à écrire (il est préférable que tout le monde écrive le
+        même nombre de cartes).
+      </p>
+      <div>Nombre total de cartes : <%= Timesup.Game.number_of_cards(@game) %></div>
+      <%= if !Timesup.Game.player_ready?(@game, @current_user) do %>
+        <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
+          <div>
+            <%= label f, :name, "Nouvelle carte" %>
+            <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
+          </div>
+          <%= submit "Ajouter" %>
+        </form>
+      <% end %>
+      <%= if Timesup.Game.get_player_cards(@game, @current_user) !== [] do %>
+        <ul class="card-list">
+          <%= for {card, i} <- Timesup.Game.get_player_cards(@game, @current_user) |> Enum.with_index() do %>
+            <li>
+              <div class="card"><%= card %></div>
+              <div class="delete">
+                <button phx-click="delete_card" phx-value-index="<%= i %>">
+                  Supprimer
+                </button>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= if Timesup.Game.all_players_ready?(@game) do %>
+        <div class="ready">
+          <div><b>Tout le monde est prêt</b></div>
+          <button phx-click="start_choosing_teams">Choisir les équipes</button>
+        </div>
+      <% else %>
+        <%= if Timesup.Game.player_ready?(@game, @current_user) do %>
+          <div class="ready">
+            <div><b>En attente des autres joueurs</b></div>
+            <div><button phx-click="toggle_player_ready">Ajouter des cartes</button></div>
+          </div>
+        <% else %>
+          <div><button phx-click="toggle_player_ready">Je suis prêt·e</button></div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
 </section>

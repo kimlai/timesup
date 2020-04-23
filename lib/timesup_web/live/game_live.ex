@@ -64,8 +64,8 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign(socket, game: game)}
   end
 
-  def handle_event("set_player_ready", _, %{assigns: assigns} = socket) do
-    game = Timesup.GameServer.set_player_ready(assigns.game.id, assigns.current_user)
+  def handle_event("toggle_player_ready", _, %{assigns: assigns} = socket) do
+    game = Timesup.GameServer.toggle_player_ready(assigns.game.id, assigns.current_user)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
     {:noreply, assign(socket, game: game)}
   end

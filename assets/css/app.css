@@ -137,13 +137,39 @@ label {
   font-weight: bold;
 }
 
-.deck-building {
+.deck-building aside > * + * {
+  margin-top: var(--s1);
+}
+.deck-building aside {
+  padding: var(--s3) var(--s0);
+  outline: 4px dashed;
+}
+.deck-building .content > * {
   max-width: var(--measure);
   margin-left: auto;
   margin-right: auto;
-  padding: var(--s3) var(--s0);
+  padding-top: var(--s3);
+  /* leave space for the cards that will appear underneath the form */
+  padding-bottom: var(--s6);
+  padding-left: var(--s0);
+  padding-right: var(--s0);
 }
-.deck-building > * + * {
+/* https://every-layout.dev/layouts/sidebar/ */
+.deck-building {
+  display: flex;
+  flex-wrap: wrap;
+}
+.deck-building aside {
+  flex-basis: 30ch;
+  flex-grow: 1;
+}
+.deck-building .content {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-width: 70%;
+}
+
+.deck-building .content > div > * + * {
   margin-top: var(--s2);
 }
 .share-box {
@@ -171,6 +197,7 @@ label {
   display: inline-block;
   border: 4px solid;
   padding: var(--s1);
+  border-radius: var(--s-1);
 }
 
 /* https://every-layout.dev/layouts/cluster/ */
@@ -187,7 +214,7 @@ ul.card-list {
 }
 
 .card-list .card {
-  border: solid;
+  border: solid 3px;
   padding: var(--s1);
   border-radius: var(--s-1);
   min-width: 13ch;
@@ -206,6 +233,10 @@ ul.card-list {
   border: 0;
   font-size: var(--s-1);
   text-decoration: underline;
+}
+
+.deck-building .ready > * + * {
+  margin-top: var(--s0);
 }
 
 .choose-teams {

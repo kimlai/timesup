@@ -62,8 +62,8 @@ defmodule Timesup.Game do
     |> length()
   end
 
-  def set_player_ready(%Game{players: players} = game, player) do
-    %{game | players: Map.update!(players, player, fn p -> %{p | ready: true} end)}
+  def toggle_player_ready(%Game{players: players} = game, player) do
+    %{game | players: Map.update!(players, player, fn p -> %{p | ready: !p.ready} end)}
   end
 
   def player_ready?(%Game{players: players}, player) do

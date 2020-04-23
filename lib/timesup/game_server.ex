@@ -54,8 +54,8 @@ defmodule Timesup.GameServer do
     GenServer.call(via_tuple(game_id), {:add_card, card, player})
   end
 
-  def set_player_ready(game_id, player) do
-    GenServer.call(via_tuple(game_id), {:set_player_ready, player})
+  def toggle_player_ready(game_id, player) do
+    GenServer.call(via_tuple(game_id), {:toggle_player_ready, player})
   end
 
   def start_choosing_teams(game_id) do
@@ -122,9 +122,9 @@ defmodule Timesup.GameServer do
   end
 
   @impl true
-  def handle_call({:set_player_ready, player}, _from, game) do
+  def handle_call({:toggle_player_ready, player}, _from, game) do
     game
-    |> Game.set_player_ready(player)
+    |> Game.toggle_player_ready(player)
     |> write_to_database()
     |> reply()
   end
