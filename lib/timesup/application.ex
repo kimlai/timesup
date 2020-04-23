@@ -11,6 +11,7 @@ defmodule Timesup.Application do
       TimesupWeb.Telemetry,
       TimesupWeb.Endpoint,
       TimesupWeb.Presence,
+      {Task.Supervisor, name: Timesup.TaskSupervisor},
       {Registry, keys: :unique, name: Timesup.GameRegistry},
       {DynamicSupervisor, strategy: :one_for_one, name: Timesup.GameSupervisor}
     ]

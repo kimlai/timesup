@@ -218,22 +218,26 @@ defmodule Timesup.GameServer do
   end
 
   def write_to_database(%Game{} = game) do
-    Task.start(fn ->
-      Multi.new()
-      |> Multi.delete(:delete, StoredGame.from_game(game))
-      |> Multi.insert(:insert, StoredGame.from_game(game))
-      |> Timesup.Repo.transaction()
-      |> case do
-        {:error, failed_operation, failed_value, _} ->
-          Logger.error("""
-          Could not save game #{game.id} because of #{failed_operation}:
-          #{failed_value}
-          """)
+    Task.Supervisor.start_child(
+      Timesup.TaskSupervisor,
+      fn ->
+        Multi.new()
+        |> Multi.delete(:delete, StoredGame.from_game(game))
+        |> Multi.insert(:insert, StoredGame.from_game(game))
+        |> Timesup.Repo.transaction()
+        |> case do
+          {:error, failed_operation, failed_value, _} ->
+            Logger.error("""
+            Could not save game #{game.id} because of #{failed_operation}:
+            #{failed_value}
+            """)
 
-        _ ->
-          nil
-      end
-    end)
+          _ ->
+            nil
+        end
+      end,
+      restart: :transient
+    )
 
     game
   end
