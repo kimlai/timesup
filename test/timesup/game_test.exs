@@ -36,24 +36,24 @@ defmodule Timesup.GameTest do
     assert Game.current_card(game) == second
 
     {:ok, game} =
-      Enum.reduce(1..4, {:ok, game}, fn _x, {:ok, game} ->
-        Game.card_guessed(game, Game.current_card(game), "etienne")
+      Enum.reduce(4..1, {:ok, game}, fn deck_length, {:ok, game} ->
+        Game.card_guessed(game, deck_length, "etienne")
       end)
 
     assert game.round == :round_2
     assert Game.current_player(game) == "cam"
 
     {:ok, game} =
-      Enum.reduce(1..4, {:ok, game}, fn _x, {:ok, game} ->
-        Game.card_guessed(game, Game.current_card(game), "cam")
+      Enum.reduce(4..1, {:ok, game}, fn deck_length, {:ok, game} ->
+        Game.card_guessed(game, deck_length, "cam")
       end)
 
     assert game.round == :round_3
     assert Game.current_player(game) == "fab"
 
     {:ok, game} =
-      Enum.reduce(1..4, {:ok, game}, fn _x, {:ok, game} ->
-        Game.card_guessed(game, Game.current_card(game), "fab")
+      Enum.reduce(4..1, {:ok, game}, fn deck_length, {:ok, game} ->
+        Game.card_guessed(game, deck_length, "fab")
       end)
 
     assert game.round == nil

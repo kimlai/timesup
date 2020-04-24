@@ -100,8 +100,12 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign(socket, game: game)}
   end
 
-  def handle_event("card_guessed", %{"card" => card}, %{assigns: assigns} = socket) do
-    case Timesup.GameServer.card_guessed(assigns.game.id, card, assigns.current_user) do
+  def handle_event("card_guessed", %{"deck_length" => deck_length}, %{assigns: assigns} = socket) do
+    case Timesup.GameServer.card_guessed(
+           assigns.game.id,
+           String.to_integer(deck_length),
+           assigns.current_user
+         ) do
       {:ok, game} ->
         TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
         TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_guessed"})

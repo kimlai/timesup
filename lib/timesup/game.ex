@@ -169,10 +169,10 @@ defmodule Timesup.Game do
     }
   end
 
-  # if the current card does not match the guessed card, then it's someone
-  # with high latency spamming the "card guessed" button. Return an :error
-  # so that we don't trigger the green flash
-  def card_guessed(%Game{deck: [current_card | _]}, card, _) when card != current_card do
+  # if the deck length sent by the user is not the same as the actual deck length, then it's
+  # someone with high latency spamming the "card guessed" button. Return an :error so that we
+  # don't trigger the green flash.
+  def card_guessed(%Game{deck: deck}, deck_length, _) when length(deck) != deck_length do
     :error
   end
 
