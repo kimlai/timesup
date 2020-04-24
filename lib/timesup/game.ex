@@ -169,16 +169,23 @@ defmodule Timesup.Game do
     }
   end
 
-  def card_guessed(%Game{deck: [card | []]} = game) do
-    game
-    |> add_point(card)
-    |> end_turn()
-    |> end_round()
+  # if the current card does not match the guessed card, then it's someone
+  # with high latency spamming the "card guessed" button. Return an :error
+  # so that we don't trigger the green flash
+  def card_guessed(%Game{deck: [current_card | _]}, card) when card != current_card do
+    :error
   end
 
-  def card_guessed(%Game{deck: [card | tail]} = game) do
-    %{game | deck: tail}
-    |> add_point(card)
+  def card_guessed(%Game{deck: [card | []]} = game, card) do
+    {:ok,
+     game
+     |> add_point(card)
+     |> end_turn()
+     |> end_round()}
+  end
+
+  def card_guessed(%Game{deck: [card | tail]} = game, _) do
+    {:ok, %{game | deck: tail} |> add_point(card)}
   end
 
   defp add_point(game, card) do

@@ -74,8 +74,8 @@ defmodule Timesup.GameServer do
     GenServer.call(via_tuple(game_id), {:start_turn})
   end
 
-  def card_guessed(game_id) do
-    GenServer.call(via_tuple(game_id), {:card_guessed})
+  def card_guessed(game_id, card) do
+    GenServer.call(via_tuple(game_id), {:card_guessed, card})
   end
 
   def pass_card(game_id) do
@@ -164,11 +164,15 @@ defmodule Timesup.GameServer do
   end
 
   @impl true
-  def handle_call({:card_guessed}, _from, game) do
-    game
-    |> Game.card_guessed()
-    |> write_to_database()
-    |> reply()
+  def handle_call({:card_guessed, card}, _from, game) do
+    case Game.card_guessed(game, card) do
+      {:ok, new_game} ->
+        write_to_database(new_game)
+        {:reply, {:ok, new_game}, new_game}
+
+      :error ->
+        {:reply, :error, game}
+    end
   end
 
   @impl true
