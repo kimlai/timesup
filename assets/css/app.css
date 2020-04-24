@@ -214,7 +214,7 @@ ul.card-list {
 }
 
 .card-list .card {
-  border: solid 3px;
+  border: solid 4px;
   padding: var(--s1);
   border-radius: var(--s-1);
   min-width: 13ch;

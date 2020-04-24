@@ -40,7 +40,7 @@
             <%= label f, :name, "Nouvelle carte" %>
             <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
           </div>
-          <%= submit "Ajouter" %>
+          <%= submit "Ajouter", class: "secondary" %>
         </form>
       <% end %>
       <%= if Timesup.Game.get_player_cards(@game, @current_user) !== [] do %>
