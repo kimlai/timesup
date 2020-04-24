@@ -46,4 +46,14 @@ defmodule Timesup.GameTest do
     game = Enum.reduce(1..4, game, fn _x, game -> Game.card_guessed(game) end)
     assert game.round == nil
   end
+
+  test "no duplicate players in a team" do
+    game =
+      Game.new("id")
+      |> Game.add_player("kim")
+      |> Game.choose_team("kim", 0)
+      |> Game.choose_team("kim", 0)
+
+    assert game.teams == [["kim"], []]
+  end
 end

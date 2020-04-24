@@ -85,7 +85,7 @@ defmodule Timesup.Game do
       | teams:
           teams
           |> remove_from_all_teams(player)
-          |> List.replace_at(team_index, Enum.at(teams, team_index) ++ [player])
+          |> List.update_at(team_index, fn team -> team ++ [player] end)
     }
   end
 
