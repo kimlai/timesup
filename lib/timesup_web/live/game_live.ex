@@ -112,12 +112,16 @@ defmodule TimesupWeb.GameLive do
     end
   end
 
-  def handle_event("pass_card", _, %{assigns: assigns} = socket) do
-    game = Timesup.GameServer.pass_card(assigns.game.id)
-    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_passed"})
+  def handle_event("pass_card", %{"card" => card}, %{assigns: assigns} = socket) do
+    case Timesup.GameServer.pass_card(assigns.game.id, card) do
+      {:ok, game} ->
+        TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+        TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_passed"})
+        {:noreply, assign(socket, game: game)}
 
-    {:noreply, assign(socket, game: game)}
+      :error ->
+        {:noreply, socket}
+    end
   end
 
   def handle_event("start_round", _, %{assigns: assigns} = socket) do

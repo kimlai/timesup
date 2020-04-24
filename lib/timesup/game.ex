@@ -199,8 +199,15 @@ defmodule Timesup.Game do
     }
   end
 
-  def pass_card(%Game{deck: [head | tail]} = game) do
-    %{game | deck: tail ++ [head]}
+  # if the current card does not match the passed card, then it's someone
+  # with high latency spamming the "pass card" button. Return an :error
+  # so that we don't trigger the red flash
+  def pass_card(%Game{deck: [head | _]}, card) when head != card do
+    :error
+  end
+
+  def pass_card(%Game{deck: [head | tail]} = game, _) do
+    {:ok, %{game | deck: tail ++ [head]}}
   end
 
   def end_round(game) do

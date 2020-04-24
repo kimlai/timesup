@@ -32,7 +32,7 @@ defmodule Timesup.GameTest do
     [first, second | _] = game.deck
     assert Game.current_card(game) == first
 
-    game = Game.pass_card(game)
+    {:ok, game} = Game.pass_card(game, first)
     assert Game.current_card(game) == second
 
     {:ok, game} =

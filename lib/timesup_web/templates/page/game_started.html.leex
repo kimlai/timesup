@@ -75,7 +75,13 @@
             <span class="current-card"><%= Timesup.Game.current_card(@game) %></span>
             <div class="actions">
               <%= if @game.round != :round_1 do %>
-                <button class="secondary" phx-click="pass_card">Je passe</button>
+                <button
+                 class="secondary"
+                 phx-click="pass_card"
+                 phx-value-card="<%= Timesup.Game.current_card(@game) %>"
+                >
+                  Je passe
+                </button>
               <% end %>
               <button phx-click="card_guessed" phx-value-card="<%= Timesup.Game.current_card(@game) %>">
                 Deviné !
