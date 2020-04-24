@@ -172,28 +172,31 @@ defmodule Timesup.Game do
   # if the current card does not match the guessed card, then it's someone
   # with high latency spamming the "card guessed" button. Return an :error
   # so that we don't trigger the green flash
-  def card_guessed(%Game{deck: [current_card | _]}, card) when card != current_card do
+  def card_guessed(%Game{deck: [current_card | _]}, card, _) when card != current_card do
     :error
   end
 
-  def card_guessed(%Game{deck: [card | []]} = game, card) do
+  def card_guessed(%Game{deck: [card | []]} = game, _, player) do
     {:ok,
      game
-     |> add_point(card)
+     |> add_point(card, player)
      |> end_turn()
      |> end_round()}
   end
 
-  def card_guessed(%Game{deck: [card | tail]} = game, _) do
-    {:ok, %{game | deck: tail} |> add_point(card)}
+  def card_guessed(%Game{deck: [card | tail]} = game, _, player) do
+    {:ok, %{game | deck: tail} |> add_point(card, player)}
   end
 
-  defp add_point(game, card) do
+  # We do not rely on the current player to attribute points, as players with high latency
+  # can send their :card_guessed message after the last tick of their turn (in which case the
+  # current player will already have changed).
+  defp add_point(game, card, player) do
     %{
       game
       | last_card_guessed: card,
         players:
-          Map.update!(game.players, current_player(game), fn p ->
+          Map.update!(game.players, player, fn p ->
             %{p | points: Map.update!(p.points, game.round, &(&1 + 1))}
           end)
     }
