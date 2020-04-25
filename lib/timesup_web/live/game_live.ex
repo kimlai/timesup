@@ -61,19 +61,19 @@ defmodule TimesupWeb.GameLive do
   def handle_event("add_card", %{"card" => %{"name" => name}}, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.add_card(assigns.game.id, name, assigns.current_user)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("toggle_player_ready", _, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.toggle_player_ready(assigns.game.id, assigns.current_user)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("start_choosing_teams", _, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.start_choosing_teams(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("choose_team", %{"team" => team}, %{assigns: assigns} = socket) do
@@ -85,19 +85,19 @@ defmodule TimesupWeb.GameLive do
       )
 
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("start_game", _, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.start_game(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("start_turn", _, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.start_turn(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("card_guessed", %{"deck_length" => deck_length}, %{assigns: assigns} = socket) do
@@ -107,9 +107,8 @@ defmodule TimesupWeb.GameLive do
            assigns.current_user
          ) do
       {:ok, game} ->
-        TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-        TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_guessed"})
-        {:noreply, assign(socket, game: game)}
+        TimesupWeb.Endpoint.broadcast(game.id, "card_guessed", %{game: game})
+        {:noreply, socket}
 
       :error ->
         {:noreply, socket}
@@ -119,9 +118,8 @@ defmodule TimesupWeb.GameLive do
   def handle_event("pass_card", %{"card" => card}, %{assigns: assigns} = socket) do
     case Timesup.GameServer.pass_card(assigns.game.id, card) do
       {:ok, game} ->
-        TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-        TimesupWeb.Endpoint.broadcast(game.id, "blink", %{type: "card_passed"})
-        {:noreply, assign(socket, game: game)}
+        TimesupWeb.Endpoint.broadcast(game.id, "card_passed", %{game: game})
+        {:noreply, socket}
 
       :error ->
         {:noreply, socket}
@@ -131,7 +129,7 @@ defmodule TimesupWeb.GameLive do
   def handle_event("start_round", _, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.start_round(assigns.game.id)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("blink_received", _, socket) do
@@ -141,8 +139,7 @@ defmodule TimesupWeb.GameLive do
   def handle_event("skip_player", %{"player" => player}, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.skip_player(assigns.game.id, player)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_event("delete_card", %{"index" => index}, %{assigns: assigns} = socket) do
@@ -155,15 +152,19 @@ defmodule TimesupWeb.GameLive do
 
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
 
-    {:noreply, assign(socket, game: game)}
+    {:noreply, socket}
   end
 
   def handle_info(%{event: "update", payload: %{game: game}}, socket) do
     {:noreply, assign(socket, game: game)}
   end
 
-  def handle_info(%{event: "blink", payload: %{type: type}}, socket) do
-    {:noreply, assign(socket, blink: type)}
+  def handle_info(%{event: "card_guessed", payload: %{game: game}}, socket) do
+    {:noreply, assign(socket, blink: "card_guessed", game: game)}
+  end
+
+  def handle_info(%{event: "card_passed", payload: %{game: game}}, socket) do
+    {:noreply, assign(socket, blink: "card_passed", game: game)}
   end
 
   def handle_info(%{event: "presence_diff"}, %{assigns: %{game: game}} = socket) do
