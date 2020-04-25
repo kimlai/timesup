@@ -34,7 +34,7 @@ defmodule TimesupWeb.GameLive do
       |> assign(game: game)
       |> assign(connect_users: fetch_connected_users(game_id))
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [clear_input: false]}
   end
 
   def render(%{game: game} = assigns) do
@@ -61,7 +61,7 @@ defmodule TimesupWeb.GameLive do
   def handle_event("add_card", %{"card" => %{"name" => name}}, %{assigns: assigns} = socket) do
     game = Timesup.GameServer.add_card(assigns.game.id, name, assigns.current_user)
     TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, socket}
+    {:noreply, assign(socket, clear_input: true)}
   end
 
   def handle_event("toggle_player_ready", _, %{assigns: assigns} = socket) do
