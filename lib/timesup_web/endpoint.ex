@@ -1,5 +1,6 @@
 defmodule TimesupWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :timesup
+  use Sentry.Phoenix.Endpoint
 
   @session_options [
     store: :cookie,

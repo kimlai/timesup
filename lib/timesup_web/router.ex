@@ -1,5 +1,7 @@
 defmodule TimesupWeb.Router do
   use TimesupWeb, :router
+  use Plug.ErrorHandler
+  use Sentry.Plug
   import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
