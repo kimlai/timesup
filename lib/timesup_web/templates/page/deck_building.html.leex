@@ -35,10 +35,14 @@
       </p>
       <div>Nombre total de cartes : <%= Timesup.Game.number_of_cards(@game) %></div>
       <%= if !Timesup.Game.player_ready?(@game, @current_user) do %>
-        <%= f = form_for :card, "#", [phx_submit: :add_card, class: "add-card-form"] %>
-          <div>
+        <%= f = form_for @card_changeset,
+          "#",
+          [phx_submit: :add_card, phx_change: :validate_card, class: "add-card-form", as: :card]
+        %>
+          <div class="input-group">
             <%= label f, :name, "Nouvelle carte" %>
             <%= text_input f, :name, placeholder: "exemple: Beyoncé, Dijkstra..." %>
+            <%= error_tag f, :name %>
           </div>
           <%= submit "Ajouter", class: "secondary" %>
         </form>

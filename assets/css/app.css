@@ -125,7 +125,7 @@ small {
 form > *:not([type="hidden"]) + * {
   margin-top: var(--s0);
 }
-label + * {
+.input-group > * + * {
   margin-top: var(--s-3);
 }
 

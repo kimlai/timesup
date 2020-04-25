@@ -2,6 +2,7 @@ defmodule TimesupWeb.GameLive do
   use Phoenix.LiveView, layout: {TimesupWeb.LayoutView, "live.html"}
   alias Timesup.GameServer
   alias TimesupWeb.Presence
+  import Ecto.Changeset
 
   def mount(%{"id" => game_id}, %{"current_user" => user}, socket) do
     if connected?(socket), do: TimesupWeb.Endpoint.subscribe(game_id)
@@ -32,6 +33,7 @@ defmodule TimesupWeb.GameLive do
       |> assign(current_user: user)
       |> assign(blink: "")
       |> assign(game: game)
+      |> assign(card_changeset: card_changeset())
       |> assign(connect_users: fetch_connected_users(game_id))
 
     {:ok, socket, temporary_assigns: [clear_input: false]}
@@ -58,10 +60,28 @@ defmodule TimesupWeb.GameLive do
     end
   end
 
-  def handle_event("add_card", %{"card" => %{"name" => name}}, %{assigns: assigns} = socket) do
-    game = Timesup.GameServer.add_card(assigns.game.id, name, assigns.current_user)
-    TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
-    {:noreply, assign(socket, clear_input: true)}
+  def handle_event("validate_card", %{"card" => params}, socket) do
+    changeset =
+      params
+      |> card_changeset()
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, card_changeset: changeset)}
+  end
+
+  def handle_event("add_card", %{"card" => params}, %{assigns: assigns} = socket) do
+    params
+    |> card_changeset()
+    |> apply_action(:validate)
+    |> case do
+      {:ok, card} ->
+        game = Timesup.GameServer.add_card(assigns.game.id, card.name, assigns.current_user)
+        TimesupWeb.Endpoint.broadcast(game.id, "update", %{game: game})
+        {:noreply, assign(socket, card_changeset: card_changeset())}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, card_changeset: changeset)}
+    end
   end
 
   def handle_event("toggle_player_ready", _, %{assigns: assigns} = socket) do
@@ -176,5 +196,11 @@ defmodule TimesupWeb.GameLive do
     |> Presence.list()
     |> Enum.map(fn {_, data} -> List.first(data[:metas]) end)
     |> Enum.map(fn user -> user.name end)
+  end
+
+  defp card_changeset(attrs \\ %{}) do
+    {%{}, %{name: :string}}
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
   end
 end
