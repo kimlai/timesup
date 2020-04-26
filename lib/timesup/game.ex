@@ -44,10 +44,15 @@ defmodule Timesup.Game do
   end
 
   def add_card(%Game{} = game, card, player) do
-    %{
+    # limit to 50 cards per player
+    if length(Map.get(game.players, player).cards) < 50 do
+      %{
+        game
+        | players: Map.update!(game.players, player, fn p -> %{p | cards: p.cards ++ [card]} end)
+      }
+    else
       game
-      | players: Map.update!(game.players, player, fn p -> %{p | cards: p.cards ++ [card]} end)
-    }
+    end
   end
 
   def get_player_cards(%Game{players: players}, player) do
