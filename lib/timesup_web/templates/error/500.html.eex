@@ -1,0 +1,11 @@
+<div class="centered">
+  <div class="error-page">
+    <div class="error-page-header">
+      <h1>500</h1>
+      <p>Le serveur s'est planté</p>
+    </div>
+      <div>
+        <%= link "Retour à l'accueil", to: Routes.page_path(TimesupWeb.Endpoint, :index), class: "btn" %>
+      </div>
+  </div>
+</div>

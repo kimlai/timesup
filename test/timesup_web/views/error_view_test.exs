@@ -9,6 +9,6 @@ defmodule TimesupWeb.ErrorViewTest do
   end
 
   test "renders 500.html" do
-    assert render_to_string(TimesupWeb.ErrorView, "500.html", []) == "Internal Server Error"
+    assert render_to_string(TimesupWeb.ErrorView, "500.html", []) =~ "500"
   end
 end

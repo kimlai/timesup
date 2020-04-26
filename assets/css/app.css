@@ -412,18 +412,18 @@ button.phx-click-loading {
   margin-top: var(--s4);
 }
 
-.not-found > * + * {
+.error-page > * + * {
   margin-top: var(--s2);
 }
 
-.not-found {
+.error-page {
   text-align: center;
 }
 
-.not-found-header h1 {
+.error-page-header h1 {
   font-size: var(--s6);
 }
-.not-found-header p {
+.error-page-header p {
   margin-top: var(--s0);
 }
 
