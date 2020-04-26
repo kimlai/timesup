@@ -1,7 +1,6 @@
 defmodule Timesup.GameServer do
   require Logger
   use GenServer
-  alias Ecto.Multi
   alias Timesup.Game
   alias Timesup.Repo
   alias Timesup.StoredGame
@@ -228,22 +227,7 @@ defmodule Timesup.GameServer do
   def write_to_database(%Game{} = game) do
     Task.Supervisor.start_child(
       Timesup.TaskSupervisor,
-      fn ->
-        Multi.new()
-        |> Multi.delete(:delete, StoredGame.from_game(game))
-        |> Multi.insert(:insert, StoredGame.from_game(game))
-        |> Timesup.Repo.transaction()
-        |> case do
-          {:error, failed_operation, failed_value, _} ->
-            Logger.error("""
-            Could not save game #{game.id} because of #{failed_operation}:
-            #{failed_value}
-            """)
-
-          _ ->
-            nil
-        end
-      end,
+      fn -> game |> StoredGame.from_game() |> Repo.update!() end,
       restart: :transient
     )
 

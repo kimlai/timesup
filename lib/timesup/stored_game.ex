@@ -11,6 +11,7 @@ defmodule Timesup.StoredGame do
   use Ecto.Schema
   alias Timesup.StoredGame
   alias Timesup.Game
+  import Ecto.Changeset
 
   @primary_key {:id, :string, []}
   schema "games" do
@@ -29,8 +30,8 @@ defmodule Timesup.StoredGame do
   end
 
   def from_game(%Game{} = game) do
-    %StoredGame{
-      id: game.id,
+    change(
+      %StoredGame{id: game.id},
       deck: game.deck,
       players: game.players,
       status: Atom.to_string(game.status),
@@ -41,7 +42,7 @@ defmodule Timesup.StoredGame do
       show_round_intro: game.show_round_intro,
       time_remaining: game.time_remaining,
       last_card_guessed: game.last_card_guessed
-    }
+    )
   end
 
   def to_game(%StoredGame{} = game) do

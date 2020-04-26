@@ -29,7 +29,6 @@ defmodule Timesup.Game do
             name: player,
             ready: false,
             cards: [],
-            team: nil,
             points: %{
               round_1: 0,
               round_2: 0,
