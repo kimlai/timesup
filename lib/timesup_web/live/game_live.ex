@@ -2,6 +2,7 @@ defmodule TimesupWeb.GameLive do
   use Phoenix.LiveView, layout: {TimesupWeb.LayoutView, "live.html"}
   alias Timesup.GameServer
   alias TimesupWeb.Presence
+  alias TimesupWeb.Router.Helpers, as: Routes
   import Ecto.Changeset
 
   def mount(%{"id" => game_id}, %{"current_user" => user}, socket) do
@@ -37,6 +38,10 @@ defmodule TimesupWeb.GameLive do
       |> assign(connect_users: fetch_connected_users(game_id))
 
     {:ok, socket, temporary_assigns: [clear_input: false]}
+  end
+
+  def mount(%{"id" => game_id}, _, socket) do
+    {:ok, redirect(socket, to: Routes.page_path(TimesupWeb.Endpoint, :join_game, game_id))}
   end
 
   def render(%{game: game} = assigns) do
