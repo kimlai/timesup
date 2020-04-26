@@ -39,8 +39,11 @@ defmodule TimesupWeb.PageController do
   end
 
   def join_game(conn, %{"id" => game_id, "player" => player}) do
+    game = GameServer.get_game(game_id)
+
     player
     |> user_changeset()
+    |> validate_not_too_many_players(game)
     |> apply_action(:validate)
     |> case do
       {:ok, player} ->
@@ -61,6 +64,17 @@ defmodule TimesupWeb.PageController do
     |> cast(attrs, [:name])
     |> update_change(:name, &String.trim/1)
     |> validate_required([:name])
+  end
+
+  defp validate_not_too_many_players(changeset, game) do
+    # it does not make sense to validate :name, but it puts the error when we want it in the HTML
+    validate_change(changeset, :name, fn _, _ ->
+      if map_size(game.players) > 99 do
+        [name: "Une partie est limitée à 100 joueurs"]
+      else
+        []
+      end
+    end)
   end
 
   # stolen from https://elixirforum.com/t/generating-alphanumeric-strings-for-permalinks/11540/5

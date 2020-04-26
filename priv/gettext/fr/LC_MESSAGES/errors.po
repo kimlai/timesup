@@ -12,4 +12,4 @@ msgstr ""
 "Plural-Forms: nplurals=2\n"
 
 msgid "can't be blank"
-msgstr "ce champ ne doit pas être vide"
+msgstr "⬆️ ce champ ne doit pas être vide"
