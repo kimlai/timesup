@@ -192,6 +192,10 @@ defmodule TimesupWeb.GameLive do
     {:noreply, assign(socket, blink: "card_passed", game: game)}
   end
 
+  def handle_info(%{event: "presence_diff"}, %{assigns: %{game: nil}} = socket) do
+    {:noreply, socket}
+  end
+
   def handle_info(%{event: "presence_diff"}, %{assigns: %{game: game}} = socket) do
     {:noreply, assign(socket, connect_users: fetch_connected_users(game.id))}
   end
