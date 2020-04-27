@@ -1,0 +1,25 @@
+<div id="odd-number-of-players" class="stack" style="--space: var(--s3);">
+  <h1>Jouer quand on est un nombre impair</h1>
+  <div>
+    <div class="stack" style="--space: var(--s1)">
+      <p>
+        Lorsque vous êtes un nombre impair, il y a deux solutions simples pour équilibrer
+        le nombre de cartes écrites par chaque équipe :
+      <p>
+      <div>
+        <ul class="stack">
+          <li>
+            Quelqu'un n'écrit <b>aucune carte</b>, et rejoint l'équipe la <b>plus nombreuse</b>.
+          </li>
+          <li>
+            Quelqu'un écrit <b>deux fois plus de cartes</b> que les autres, et rejoint l'équipe
+            la <b>moins nombreuse</b>.
+          </li>
+        </ul>
+      </div>
+      <p>
+        Libre à vous de choisir une solution plus compliquée bien sûr.
+      </p>
+    </div>
+  </div>
+</div>

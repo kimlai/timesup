@@ -58,8 +58,15 @@ button:hover {
   cursor: pointer;
 }
 
-small {
+small p {
   font-size: var(--s-1);
+}
+
+.stack {
+  --space: var(--s0);
+}
+.stack > * + * {
+  margin-top: var(--space);
 }
 
 .centered {
@@ -443,4 +450,21 @@ button.phx-click-loading {
   background: black;
   color: white;
   padding: var(--s-2) var(--s1);
+}
+
+.tip {
+  font-size: var(--s-1);
+}
+.tip a {
+  color: black;
+}
+#odd-number-of-players {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--s3) var(--s0);
+  min-height: 100vh;
+}
+#odd-number-of-players ul {
+  list-style: inherit;
 }

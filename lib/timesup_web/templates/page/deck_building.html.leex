@@ -28,12 +28,21 @@
       </div>
 
       <h2>Les cartes</h2>
-      <p>
-        Vous devez constituer une pile de cartes de noms de personnalités (plus ou moins) connues. Vous
-        décidez entre vous du nombre de cartes à écrire (il est préférable que tout le monde écrive le
-        même nombre de cartes).
-      </p>
-      <div>Nombre total de cartes : <%= Timesup.Game.number_of_cards(@game) %></div>
+      <div class="stack" style="--space: var(--s-1)">
+        <p>
+          Vous devez constituer une pile de cartes de noms de personnalités (plus ou moins) connues. Vous
+          décidez entre vous du nombre de cartes à écrire.
+        </p>
+        <div class="tip">
+          <p>
+            il est préférable que tout le monde écrive le même nombre de cartes, sauf
+            pour <a href="/odd_number_of_players">un nombre impair de joueur·euses</a>.
+          </p>
+        </div>
+      </div>
+      <div>
+        <div>Nombre total de cartes : <b><%= Timesup.Game.number_of_cards(@game) %></b></div>
+      </div>
       <%= if !Timesup.Game.player_ready?(@game, @current_user) do %>
         <%= f = form_for @card_changeset,
           "#",

@@ -24,6 +24,7 @@ defmodule TimesupWeb.Router do
     post "/create-game", PageController, :create_game
     get "/game/:id/join", PageController, :choose_username
     post "/game/:id/join", PageController, :join_game
+    get "/odd_number_of_players", PageController, :odd_number_of_players
 
     live "/game/:id", GameLive
   end

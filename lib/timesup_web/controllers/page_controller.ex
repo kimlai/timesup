@@ -59,6 +59,10 @@ defmodule TimesupWeb.PageController do
     end
   end
 
+  def odd_number_of_players(conn, _) do
+    render(conn, "odd_number_of_players.html")
+  end
+
   defp user_changeset(attrs \\ %{}) do
     {%{}, %{name: :string}}
     |> cast(attrs, [:name])
