@@ -72,12 +72,15 @@ small p {
 .centered {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .home {
   padding: 0 var(--s0);
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .home > * + * {
@@ -100,6 +103,15 @@ small p {
 }
 .home .links > * + * {
   margin-top: var(--s1);
+}
+.personal-website-link {
+  padding: var(--s0);
+  width: 100%;
+  text-align: right;
+  font-size: var(--s-1);
+}
+.personal-website-link a {
+  color: black;
 }
 .how-does-it-work {
   text-align: center;
