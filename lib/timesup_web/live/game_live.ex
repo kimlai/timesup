@@ -46,7 +46,7 @@ defmodule TimesupWeb.GameLive do
 
   def render(%{game: game} = assigns) do
     if game == nil do
-      Phoenix.View.render(TimesupWeb.PageView, "404.html", assigns)
+      raise Timesup.GameNotFoundError
     else
       case assigns.game.status do
         :deck_building ->
