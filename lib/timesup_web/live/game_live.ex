@@ -8,19 +8,11 @@ defmodule TimesupWeb.GameLive do
   def mount(%{"id" => game_id}, %{"current_user" => user}, socket) do
     if connected?(socket), do: TimesupWeb.Endpoint.subscribe(game_id)
 
-    game =
-      try do
-        Timesup.GameServer.get_game(game_id)
-      catch
-        # most likely a new deployment destroyed the process
-        :exit, _ ->
-          DynamicSupervisor.start_child(
-            Timesup.GameSupervisor,
-            {GameServer, name: {:via, Registry, {Timesup.GameRegistry, game_id}}}
-          )
+    if Registry.lookup(Timesup.GameRegistry, game_id) == [] do
+      raise Timesup.GameNotFoundError
+    end
 
-          Timesup.GameServer.get_game(game_id)
-      end
+    game = Timesup.GameServer.get_game(game_id)
 
     Presence.track(
       self(),

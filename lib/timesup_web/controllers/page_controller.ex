@@ -35,7 +35,11 @@ defmodule TimesupWeb.PageController do
   end
 
   def choose_username(conn, %{"id" => id}) do
-    render(conn, "join_game.html", id: id, changeset: user_changeset())
+    if Registry.lookup(Timesup.GameRegistry, id) != [] do
+      render(conn, "join_game.html", id: id, changeset: user_changeset())
+    else
+      raise Timesup.GameNotFoundError
+    end
   end
 
   def join_game(conn, %{"id" => game_id, "player" => player}) do

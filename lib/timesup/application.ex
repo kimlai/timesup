@@ -13,7 +13,8 @@ defmodule Timesup.Application do
       TimesupWeb.Presence,
       {Task.Supervisor, name: Timesup.TaskSupervisor},
       {Registry, keys: :unique, name: Timesup.GameRegistry},
-      {DynamicSupervisor, strategy: :one_for_one, name: Timesup.GameSupervisor}
+      {DynamicSupervisor, strategy: :one_for_one, name: Timesup.GameSupervisor},
+      {Timesup.StartServersTask, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
