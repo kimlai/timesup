@@ -71,10 +71,17 @@
         </ul>
       <% end %>
       <%= if Timesup.Game.all_players_ready?(@game) do %>
-        <div class="ready">
-          <div><b>Tout le monde est prêt</b></div>
-          <button phx-click="start_choosing_teams">Choisir les équipes</button>
-        </div>
+        <%= if Timesup.Game.number_of_cards(@game) > 0 do %>
+          <div class="ready">
+            <div><b>Tout le monde est prêt</b></div>
+            <button phx-click="start_choosing_teams">Choisir les équipes</button>
+          </div>
+        <% else %>
+          <div class="ready">
+            <div><b>Le jeu doit contenir au moins une carte</b></div>
+            <button phx-click="toggle_player_ready">Ajouter des cartes</button>
+          </div>
+        <% end %>
       <% else %>
         <%= if Timesup.Game.player_ready?(@game, @current_user) do %>
           <div class="ready">
