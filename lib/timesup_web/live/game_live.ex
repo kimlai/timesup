@@ -12,7 +12,7 @@ defmodule TimesupWeb.GameLive do
       raise Timesup.GameNotFoundError
     end
 
-    game = Timesup.GameServer.get_game(game_id)
+    game = GameServer.get_game(game_id)
 
     Presence.track(
       self(),
@@ -37,23 +37,19 @@ defmodule TimesupWeb.GameLive do
   end
 
   def render(%{game: game} = assigns) do
-    if game == nil do
-      raise Timesup.GameNotFoundError
-    else
-      case assigns.game.status do
-        :deck_building ->
-          Phoenix.View.render(TimesupWeb.PageView, "deck_building.html", assigns)
+    case assigns.game.status do
+      :deck_building ->
+        Phoenix.View.render(TimesupWeb.PageView, "deck_building.html", assigns)
 
-        :choosing_teams ->
-          Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
+      :choosing_teams ->
+        Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
 
-        :game_started ->
-          if game.show_round_intro and game.round != nil do
-            Phoenix.View.render(TimesupWeb.PageView, "intro_#{game.round}.html", assigns)
-          else
-            Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
-          end
-      end
+      :game_started ->
+        if game.show_round_intro and game.round != nil do
+          Phoenix.View.render(TimesupWeb.PageView, "intro_#{game.round}.html", assigns)
+        else
+          Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
+        end
     end
   end
 
