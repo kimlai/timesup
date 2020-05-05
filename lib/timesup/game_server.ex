@@ -21,22 +21,13 @@ defmodule Timesup.GameServer do
   def handle_continue(:load_from_database, game) do
     game =
       StoredGame
-      |> Repo.get(game.id)
-      |> case do
-        %StoredGame{} = stored_game ->
-          game = StoredGame.to_game(stored_game)
+      |> Repo.get!(game.id)
+      |> StoredGame.to_game(stored_game)
 
-          # restart the timer if necessary
-          if game.playing do
-            Process.send_after(self(), :tick, 1000)
-          end
-
-          game
-
-        # Nothing in the database -> we'll show the 404 page
-        nil ->
-          nil
-      end
+    # restart the timer if necessary
+    if game.playing do
+      Process.send_after(self(), :tick, 1000)
+    end
 
     {:noreply, game}
   end
