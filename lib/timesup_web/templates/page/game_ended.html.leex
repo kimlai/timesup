@@ -1,0 +1,34 @@
+<section class="game-over">
+  <div class="summary">
+  <%= for {team, index} <- Enum.with_index(game_summary(@game)) do %>
+    <div class="team-summary">
+      <%= if index == 0 do %>
+        <h1>Bravo à l'<span class="team">équipe&nbsp<%= team.number %></span>&nbsp!</h1>
+      <% else %>
+        <h2>Et l'<span class="team">équipe&nbsp<%= team.number %></span> <span class="text-sm">(bravo aussi quand même)</span></h2>
+      <% end %>
+      <div>
+        <%= render(
+          TimesupWeb.PageView,
+          "player_list.html",
+          Map.put(assigns, :players, team.players)
+        ) %>
+      </div>
+      <div class="points">
+        <div><%= team.points[:round_1] %> + <%= team.points[:round_2] %> + <%= team.points[:round_3] %> =</div>
+        <div class="total"><%= team.total %></div>
+        <div>points</div>
+      </div>
+    </div>
+  <% end %>
+  </div>
+  <p>
+    Si vous avez trouvé un bug ou que vous avez des idées
+    d'améliorations, vous pouvez me contacter <a href="mailto:hello@kimlaitrinh.me">par email</a>
+    ou sur <a href="https://twitter.com/KimLaiTrinh">Twitter</a>. Le code est disponible sur
+    <a href="https://github.com/kimlai/timesup">Github</a>.
+  <p>
+  <a class="btn" href="<%= Routes.page_path(TimesupWeb.Endpoint, :index) %>">
+    Retour à l'accueil
+  </a>
+</section>

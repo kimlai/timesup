@@ -424,11 +424,91 @@ button.phx-click-loading {
   transform: translateY(var(--s-4));
 }
 
+.game-over {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--s3) var(--s0);
+  min-height: 100vh;
+}
+
+@keyframes pinch {
+  0% {
+    transform: translateY(1rem);
+  }
+  25% {
+    transform: translateY(-1rem);
+  }
+  50% {
+    transform: translateY(0.5rem);
+    transform: translateX(0.25rem);
+  }
+  75% {
+    transform: translateY(-0.5rem);
+    transform: translateX(-0.25rem);
+    transform: rotate;
+  }
+  87.5% {
+    transform: rotate(0.25rem);
+  }
+  to {
+    transform: rotate(0);
+  }
+}
+
+.game-over {
+  animation: pinch 0.25s ease-in;
+}
 .game-over h1 {
-  padding-top: var(--s6);
+  margin-bottom: var(--s3);
 }
 .game-over > * + * {
-  margin-top: var(--s4);
+  margin-top: var(--s3);
+}
+.game-over .summary > * + * {
+  margin-top: var(--s3);
+}
+
+.game-over .summary .team-summary > * + * {
+  margin-top: var(--s1);
+}
+
+.game-over .summary .points {
+  display: flex;
+  align-items: center;
+}
+.game-over .summary .total {
+  font-size: var(--s1);
+  margin: 0 var(--s-2);
+}
+.game-over .team {
+  margin-left: var(--s-4);
+  padding-left: var(--s-4);
+  padding-right: var(--s-4);
+  background: black;
+  color: white;
+}
+.game-over .team-summary:first-child {
+  font-size: var(--s1);
+}
+.game-over .team-summary:first-child .player {
+  position: relative;
+}
+.game-over .team-summary:first-child .player::before {
+  content: "🏆";
+}
+.game-over .team-summary:nth-child(2) .player::before {
+  content: "🥈";
+}
+.game-over .team-summary:first-child h2 {
+  font-size: var(--s2);
+}
+.game-over .team-summary:first-child .total {
+  font-size: var(--s2);
+}
+.game-over h2 .text-sm {
+  font-size: var(--s-1);
+  font-weight: normal;
 }
 
 .error-page > * + * {

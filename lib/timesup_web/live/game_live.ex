@@ -45,10 +45,15 @@ defmodule TimesupWeb.GameLive do
         Phoenix.View.render(TimesupWeb.PageView, "choose_teams.html", assigns)
 
       :game_started ->
-        if game.show_round_intro and game.round != nil do
-          Phoenix.View.render(TimesupWeb.PageView, "intro_#{game.round}.html", assigns)
-        else
-          Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
+        cond do
+          Timesup.Game.game_over?(game) ->
+            Phoenix.View.render(TimesupWeb.PageView, "game_ended.html", assigns)
+
+          game.show_round_intro ->
+            Phoenix.View.render(TimesupWeb.PageView, "intro_#{game.round}.html", assigns)
+
+          true ->
+            Phoenix.View.render(TimesupWeb.PageView, "game_started.html", assigns)
         end
     end
   end
