@@ -15,13 +15,10 @@ defmodule TimesupWeb.PageController do
       random_id()
       |> Game.new()
       # we write the to database now because the game GenServer will try to
-      # fetch the existing state from the DB as soon as it starts up
+      # UPDATE the existing database entry after each state change
       |> write_to_database()
 
-    DynamicSupervisor.start_child(
-      Timesup.GameSupervisor,
-      {GameServer, name: {:via, Registry, {Timesup.GameRegistry, game.id}}}
-    )
+    DynamicSupervisor.start_child(Timesup.GameSupervisor, {GameServer, game})
 
     redirect(conn, to: "/game/#{game.id}/join")
   end

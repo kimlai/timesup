@@ -19,12 +19,11 @@ defmodule Timesup.StartServersTask do
   def run() do
     StoredGame
     |> where([game], game.updated_at > ago(1, "day"))
-    |> select([game], game.id)
     |> Repo.all()
-    |> Enum.map(fn id ->
+    |> Enum.map(fn stored_game ->
       DynamicSupervisor.start_child(
         Timesup.GameSupervisor,
-        {GameServer, name: {:via, Registry, {Timesup.GameRegistry, id}}}
+        {GameServer, StoredGame.to_game(stored_game)}
       )
     end)
   end

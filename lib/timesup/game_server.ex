@@ -7,29 +7,18 @@ defmodule Timesup.GameServer do
 
   # Client
 
-  def start_link(options) do
-    [name: {:via, Registry, {Timesup.GameRegistry, game_id}}] = options
-    GenServer.start_link(__MODULE__, Game.new(game_id), options)
+  def start_link(%Game{} = game) do
+    GenServer.start_link(__MODULE__, game, name: via_tuple(game.id))
   end
 
   @impl true
   def init(game) do
-    {:ok, game, {:continue, :load_from_database}}
-  end
-
-  @impl true
-  def handle_continue(:load_from_database, game) do
-    game =
-      StoredGame
-      |> Repo.get!(game.id)
-      |> StoredGame.to_game(stored_game)
-
     # restart the timer if necessary
     if game.playing do
       Process.send_after(self(), :tick, 1000)
     end
 
-    {:noreply, game}
+    {:ok, game}
   end
 
   def get_game(game_id) do
