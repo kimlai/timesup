@@ -2,7 +2,7 @@
   <%= form_for @changeset, Routes.page_path(@conn, :join_game, @id), [as: :player, class: "join-game-form"], fn f -> %>
     <div class="input-group">
       <%= label f, :name, "Votre nom" %>
-      <%= text_input f, :name, value: "", required: true %>
+      <%= text_input f, :name, value: Plug.Conn.get_session(@conn, :current_user), required: true %>
       <%= error_tag f, :name %>
     </div>
     <%= submit "Valider" %>
