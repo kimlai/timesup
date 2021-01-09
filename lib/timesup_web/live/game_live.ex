@@ -14,22 +14,26 @@ defmodule TimesupWeb.GameLive do
 
     game = GameServer.get_game(game_id)
 
-    Presence.track(
-      self(),
-      game_id,
-      user,
-      %{name: user}
-    )
+    if !Map.has_key?(game.players, user) do
+      {:ok, redirect(socket, to: Routes.page_path(TimesupWeb.Endpoint, :join_game, game_id))}
+    else
+      Presence.track(
+        self(),
+        game_id,
+        user,
+        %{name: user}
+      )
 
-    socket =
-      socket
-      |> assign(current_user: user)
-      |> assign(blink: "")
-      |> assign(game: game)
-      |> assign(card_changeset: card_changeset())
-      |> assign(connect_users: fetch_connected_users(game_id))
+      socket =
+        socket
+        |> assign(current_user: user)
+        |> assign(blink: "")
+        |> assign(game: game)
+        |> assign(card_changeset: card_changeset())
+        |> assign(connect_users: fetch_connected_users(game_id))
 
-    {:ok, socket, temporary_assigns: [clear_input: false]}
+      {:ok, socket, temporary_assigns: [clear_input: false]}
+    end
   end
 
   def mount(%{"id" => game_id}, _, socket) do
