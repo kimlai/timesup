@@ -35,7 +35,13 @@ defmodule TimesupWeb.PageController do
     if Registry.lookup(Timesup.GameRegistry, id) != [] do
       render(conn, "join_game.html", id: id, changeset: user_changeset())
     else
-      raise Timesup.GameNotFoundError
+      case Repo.get(StoredGame, id) do
+        nil ->
+          raise Timesup.GameNotFoundError
+
+        game ->
+          raise Timesup.GameExpiredError, message: "Game inserted at #{game.inserted_at}"
+      end
     end
   end
 
