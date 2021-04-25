@@ -18,7 +18,7 @@ defmodule Timesup.StartServersTask do
 
   def run() do
     StoredGame
-    |> where([game], game.updated_at > ago(1, "day"))
+    |> where([game], game.updated_at > ago(7, "day"))
     |> Repo.all()
     |> Enum.map(fn stored_game ->
       DynamicSupervisor.start_child(
